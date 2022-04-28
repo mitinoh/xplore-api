@@ -19,8 +19,8 @@ export class UserService {
 
   async create(req: Http2ServerRequest, createUserDto: CreateUserDto) {
     try {
-      let uid: string = await this.authService.getUserToken(req);
-      let newUser = new this.userModel({...createUserDto, fid: uid}); 
+      let fid: string = await this.authService.getUserToken(req);
+      let newUser = new this.userModel({...createUserDto, fid: fid}); 
       return await newUser.save();
     } catch (error) {
       this.logger.error(error)

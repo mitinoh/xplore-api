@@ -52,7 +52,7 @@ export class AuthService implements NestMiddleware {
        
        return this.defaultApp.auth().verifyIdToken(token)
                 .then(async (decodeToken: any) => {
-                    return decodeToken.uid
+                    return decodeToken.fid
                     
                 }).catch((error: any) => {
                     this.logger.error(error)

@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { PlanTripService } from './plan-trip.service';
 import { PlanTripController } from './plan-trip.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { PlannedTrip } from './entities/planned-trip.interface';
+import { PlannedLocation } from './entities/planned-location.interface';
 import { PlanTrip, PlanTripSchema } from './entities/plan-trip.entity';
 import { User, UserSchema } from '../user/entities/user.entity';
 import { UserService } from '../user/user.service';

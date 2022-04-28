@@ -9,6 +9,10 @@ import { Model } from "mongoose";
 import mongoose from 'mongoose';
 import { AuthService } from 'src/auth/auth.service';
 import { UserService } from '../user/user.service';
+import { PipelineStage } from 'mongoose';
+import { ObjectId } from 'bson';
+import { Document, Schema as MongooseSchema, Types } from "mongoose";
+import { skip } from 'rxjs';
 
 @Injectable()
 export class PlanTripService {
@@ -21,25 +25,23 @@ export class PlanTripService {
 
   async create(req:Http2ServerRequest, createPlanTripDto: CreatePlanTripDto) {
       try {
-        let uid: any = await this.userService.getUserObjectId(req) ?? '';
-        let newCreatePlanTrip = new this.newPlanTripnModel({...createPlanTripDto, uid: uid});
-      return await newCreatePlanTrip.save();
+        let newCreatePlanTrip = new this.newPlanTripnModel({...createPlanTripDto, uid: "626324e42aac94908e6953b8"});
+        return await newCreatePlanTrip.save();
     } catch (error) {
-      this.logger.error(error)
       throw new HttpException(error.message, HttpStatus.EXPECTATION_FAILED);
     }
   }
 
   async findAll(query: MongoQueryModel) {
     try {
+      
       return await this.newPlanTripnModel
-        .find(query.filter)
-        .populate('avoidCategory')
-        .populate('plannedTrip')
-        .limit(query.limit)
-        .skip(query.skip)
-        .sort(query.sort)
-        .select(query.select) 
+      .aggregate(this.getMongoAggregation(query))
+      //  .find(query.filter)
+      //   .limit(query.limit)
+      //   .skip(query.skip)
+      //   .sort(query.sort)
+      //   .select(query.select) 
     } catch (error) {
       this.logger.error(error)
       throw new HttpException(error.message, HttpStatus.EXPECTATION_FAILED);
@@ -77,5 +79,182 @@ export class PlanTripService {
       this.logger.error(error)
       throw new HttpException(error.message, HttpStatus.EXPECTATION_FAILED);
     }
+  }
+
+  // Quando sarà necessario aggiungere anche select e sort 
+  getMongoAggregation(query: MongoQueryModel): PipelineStage[] {
+    
+    let uidAggregation: PipelineStage = 
+    {
+      '$match': {
+        'uid':  new  ObjectId(query.filter["uid"])
+      }
+    }
+
+
+    let returnDateAggregation: PipelineStage =   {'$match': {}} // valore di default
+    if(query.filter.progress === true) {
+        returnDateAggregation = 
+        {
+          '$match': {
+            'returnDate': {
+              '$gt': new Date()
+            }
+          }
+        
+      }
+    }  
+    else if (query.filter.progress === false){
+        returnDateAggregation = 
+        {
+          '$match': {
+            'returnDate': {
+              '$lt': new Date()
+            }
+          }
+        
+      }
+    }
+
+
+    let limitAggregation: PipelineStage = { '$limit': query.limit ?? 999999999 }
+    let skipAggregation: PipelineStage = { '$skip': query.skip ?? 0 }
+
+
+    console.log(query)
+
+    let aggregation: PipelineStage[] = [
+
+      uidAggregation,
+      returnDateAggregation,
+        {
+          '$unwind': {
+            'path': '$plannedLocation', 
+            'preserveNullAndEmptyArrays': true
+          }
+        }, {
+          '$addFields': {
+            'plannedLocation.location': {
+              '$toObjectId': '$plannedLocation.location'
+            }
+          }
+        }, {
+          '$lookup': {
+            'from': 'locations', 
+            'localField': 'plannedLocation.location', 
+            'foreignField': '_id', 
+            'as': 'plannedLocation.location'
+          }
+        }, {
+          '$unwind': {
+            'path': '$plannedLocation.location', 
+            'preserveNullAndEmptyArrays': false
+          }
+        }, {
+          '$group': {
+            '_id': '$_id', 
+            'uid': {
+              '$first': '$uid'
+            }, 
+            'tripName': {
+              '$first': '$tripName'
+            }, 
+            'plannedLocation': {
+              '$push': '$plannedLocation'
+            }, 
+            'coordinate': {
+              '$first': '$coordinate'
+            }, 
+            'distance': {
+              '$first': '$distance'
+            }, 
+            'avoidCategory': {
+              '$push': '$avoidCategory'
+            }, 
+            'returnDate': {
+              '$first': '$returnDate'
+            }, 
+            'goneDate': {
+              '$first': '$goneDate'
+            }, 
+            'cdate': {
+              '$first': '$cdate'
+            }, 
+            '__v': {
+              '$first': '$__v'
+            }
+          }
+        }, {
+          '$unwind': {
+            'path': '$avoidCategory', 
+            'preserveNullAndEmptyArrays': true
+          }
+        }, {
+          '$lookup': {
+            'from': 'locationcategories', 
+            'localField': 'avoidCategory', 
+            'foreignField': '_id', 
+            'as': 'avoidCategory'
+          }
+        }, {
+          '$unwind': {
+            'path': '$avoidCategory', 
+            'preserveNullAndEmptyArrays': true
+          }
+        }, {
+          '$group': {
+            '_id': '$_id', 
+            'uid': {
+              '$first': '$uid'
+            }, 
+            'tripName': {
+              '$first': '$tripName'
+            }, 
+            'plannedLocation': {
+              '$push': '$plannedLocation'
+            }, 
+            'coordinate': {
+              '$first': '$coordinate'
+            }, 
+            'distance': {
+              '$first': '$distance'
+            }, 
+            'avoidCategory': {
+              '$push': '$avoidCategory'
+            }, 
+            'returnDate': {
+              '$first': '$returnDate'
+            }, 
+            'goneDate': {
+              '$first': '$goneDate'
+            }, 
+            'cdate': {
+              '$first': '$cdate'
+            }, 
+            '__v': {
+              '$first': '$__v'
+            }
+          }
+        }, {
+          '$lookup': {
+            'from': 'users', 
+            'localField': 'uid', 
+            'foreignField': '_id', 
+            'as': 'uid'
+          }
+        }, {
+          '$unwind': {
+            'path': '$uid', 
+            'preserveNullAndEmptyArrays': true
+          }
+        }, {
+          '$sort': {
+            'goneDate': 1
+          }
+        },
+        skipAggregation,
+        limitAggregation
+    ]
+  return aggregation
   }
 }
