@@ -34,7 +34,7 @@ export class LocationService {
     try {
       return await this.locationModel
         .find(query.filter)
-        .populate('locationcategory')
+        .populate('locationCategory')
         .limit(query.limit)
         .skip(query.skip)
         .sort(query.sort)
@@ -49,7 +49,7 @@ export class LocationService {
     try {
       return await this.locationModel
       .findOne({ _id: id })
-      .populate('locationcategory')
+      .populate('locationCategory')
     } catch (error) {
       this.logger.error(error)
       throw new HttpException(error.message, HttpStatus.EXPECTATION_FAILED);

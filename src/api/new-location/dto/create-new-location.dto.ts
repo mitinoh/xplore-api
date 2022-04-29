@@ -1,23 +1,25 @@
 
 
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty } from "class-validator";
+import { IsArray, IsMongoId, IsNotEmpty, IsString } from "class-validator";
 import { Document, Schema as MongooseSchema, Types } from "mongoose";
 
 export class CreateNewLocationDto {
 
     @ApiProperty()
     @IsNotEmpty()
+    @IsString()
     name: string;
 
     @ApiProperty()
+    @IsString()
     desc: string = "";
 
-    @ApiProperty()
-    locationcategory: MongooseSchema.Types.ObjectId[] = []
+    @ApiProperty({type: [MongooseSchema.Types.ObjectId]})
+    @IsArray()
+    @IsMongoId({each: true})
+    locationCategory: MongooseSchema.Types.ObjectId[] = []
 
-
-    @ApiProperty()
     cdate: number = Date.now();
 
 }

@@ -1,39 +1,40 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { IsArray, IsEmpty, IsIn, IsInt, IsNotEmpty, IsNotEmptyObject, IsNumber, IsObject, NotEquals, notEquals, Validate, ValidateIf, ValidateNested } from "class-validator";
+import { IsArray, IsEmpty, IsIn, IsInt, IsMongoId, IsNotEmpty, IsNotEmptyObject, IsNumber, IsObject, IsString, NotEquals, notEquals, Validate, ValidateIf, ValidateNested } from "class-validator";
 import { Coordinate } from "../entities/coordinate.interface";
 import { DayAvaiable } from "../entities/dayavaiable.interface";
 import { CoordinateRule, CoordinateValidator } from "../validator/location.validator";
 import { Document, Schema as MongooseSchema, Types } from "mongoose";
-import { DayAvaiableRule } from "../validator/day-avaiable.validator";
-import { Prop } from "@nestjs/mongoose";
 
 export class CreateLocationDto {
 
     @ApiProperty()
     @IsNotEmpty()
+    @IsString()
     name: string;
 
     @ApiProperty()
+    @IsString()
     desc: string = "";
 
-    @ApiProperty()
-    @CoordinateRule()
+    @ApiProperty({type: Coordinate})
+    @IsNotEmpty()
     coordinate: Coordinate;
 
-    @ApiProperty()
-    @ValidateNested()
-    @Type(() => DayAvaiable)
-    @IsObject()
+    @ApiProperty({type: [DayAvaiable]})
+    @ValidateNested({each: true})
     dayAvaiable: DayAvaiable[] 
 
-    @ValidateIf(el =>  el >= 0 && el < 5) 
-    @ApiProperty()
+  //  @ValidateIf(el =>  el >= 0 && el < 5) // TODO: Creare validatore 
+    @ApiProperty({type: [Number]})
     @IsNumber({},{each: true})
     periodAvaiable: number[] = []
 
-    @ApiProperty()
-    locationcategory: MongooseSchema.Types.ObjectId[] = []
+    @ApiProperty({type: [MongooseSchema.Types.ObjectId]})
+    @IsArray()
+    @IsMongoId({each: true})
+    locationCategory: MongooseSchema.Types.ObjectId[] = []
+
 
     cdate: number = Date.now();
 

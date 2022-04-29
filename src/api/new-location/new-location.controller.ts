@@ -5,7 +5,7 @@ import { UpdateNewLocationDto } from './dto/update-new-location.dto';
 import { MongoQuery, MongoQueryModel } from 'nest-mongo-query-parser';
 import { AuthService } from 'src/auth/auth.service';
 import { Http2ServerRequest } from 'http2';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('new-location')
 @Controller('new-location')
@@ -15,13 +15,16 @@ export class NewLocationController {
   @Post()
   @UsePipes(new ValidationPipe({ transform: true }))
   create(@Req() req: Http2ServerRequest, @Body() createNewLocationDto: CreateNewLocationDto) {
-
     return this.newLocationService.create(req, createNewLocationDto);
   }
 
+  @ApiQuery({ name: 'name', type: 'string', required: false })
+  @ApiQuery({ name: 'desc', type: 'string', required: false })
+  @ApiQuery({ name: 'uid', type: 'objectId', required: false })
+  @ApiQuery({ name: 'locationCategory', type: 'objectId', required: false })
+  @ApiQuery({ name: 'cdate', type: 'Date', required: false })
   @Get()
   findAll(@MongoQuery() query: MongoQueryModel) {
-    
     return this.newLocationService.findAll(query);
   }
 
@@ -31,6 +34,9 @@ export class NewLocationController {
   }
 
   @Patch(':id')
+  @ApiBody({
+    type: CreateNewLocationDto
+  })
   update(@Param('id') id: string, @Body() updateNewLocationDto: UpdateNewLocationDto) {
     return this.newLocationService.update(id, updateNewLocationDto);
   }

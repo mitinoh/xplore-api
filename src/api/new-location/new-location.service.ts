@@ -36,7 +36,7 @@ export class NewLocationService {
     try {
       return await this.newLocationModel
         .find(query.filter)
-        .populate('locationcategory')
+        .populate('locationCategory')
         .populate('uid')
         .limit(query.limit)
         .skip(query.skip)
@@ -52,7 +52,7 @@ export class NewLocationService {
     try {
       return await this.newLocationModel
         .findOne({ _id: id })
-        .populate('locationcategory')
+        .populate('locationCategory')
         .populate('uid');
     } catch (error) {
       this.logger.error(error)

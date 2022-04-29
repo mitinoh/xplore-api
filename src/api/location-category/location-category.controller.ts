@@ -4,7 +4,7 @@ import { CreateLocationCategoryDto } from './dto/create-location-category.dto';
 import { UpdateLocationCategoryDto } from './dto/update-location-category.dto';
 import { Http2ServerRequest } from 'http2';
 import { MongoQuery, MongoQueryModel } from 'nest-mongo-query-parser';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('location-category')
 @Controller('location-category')
@@ -17,6 +17,8 @@ export class LocationCategoryController {
     return this.locationCategoryService.create(req, createLocationCategoryDto);
   }
 
+
+  @ApiQuery({ name: 'name', type: 'string', required: false })
   @Get()
   findAll( @MongoQuery() query: MongoQueryModel) {
     return this.locationCategoryService.findAll(query);
@@ -28,6 +30,9 @@ export class LocationCategoryController {
   }
 
   @Patch(':id')
+  @ApiBody({
+    type: CreateLocationCategoryDto
+  })
   update(@Param('id') id: string, @Body() updateLocationCategoryDto: UpdateLocationCategoryDto) {
     return this.locationCategoryService.update(id, updateLocationCategoryDto);
   }
