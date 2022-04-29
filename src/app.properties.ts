@@ -5,3 +5,8 @@ export const auth = {
     isFromDart: false,
     tokenValid: true
 }
+
+export const assetsDir = './../asset/'
+export const logDir = './../log/'
+export const logDatePattern = 'DD-MM-YYYY'
+export const logFileMaxSize = '20m'

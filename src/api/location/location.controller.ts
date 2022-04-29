@@ -23,6 +23,7 @@ export class LocationController {
 
   @Get()
   findAll(@MongoQuery() query: MongoQueryModel) {
+    this.logger.log("zzzzz")
     return this.locationService.findAll(query);
   }
 
