@@ -1,37 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Inject, Logger } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { ImageService } from './image.service';
 import { CreateImageDto } from './dto/create-image.dto';
 import { UpdateImageDto } from './dto/update-image.dto';
-import { LocationService } from '../location/location.service';
 
-@Controller('api/image')
+@Controller('image')
 export class ImageController {
-  constructor(private readonly imageService: ImageService,  
-    @Inject('winston')  private readonly logger: Logger,) {}
+  constructor(private readonly imageService: ImageService) {}
 
-  @Post()
-  create(@Body() createImageDto: CreateImageDto) {
-    return this.imageService.create(createImageDto);
+  @Post(':id')
+  create(@Param('id') id: string, @Body() createImageDto: CreateImageDto) {
+    return this.imageService.create(id, createImageDto);
   }
 
-  @Get()
-  findAll() {
-    this.logger.error(new Date())
-    return this.imageService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.imageService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateImageDto: UpdateImageDto) {
-    return this.imageService.update(+id, updateImageDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.imageService.remove(+id);
-  }
 }

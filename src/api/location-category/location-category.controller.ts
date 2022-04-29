@@ -5,7 +5,7 @@ import { UpdateLocationCategoryDto } from './dto/update-location-category.dto';
 import { Http2ServerRequest } from 'http2';
 import { MongoQuery, MongoQueryModel } from 'nest-mongo-query-parser';
 
-@Controller('api/location-category')
+@Controller('location-category')
 export class LocationCategoryController {
   constructor(private readonly locationCategoryService: LocationCategoryService) {}
 

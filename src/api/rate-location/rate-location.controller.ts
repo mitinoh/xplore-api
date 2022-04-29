@@ -5,7 +5,7 @@ import { UpdateRateLocationDto } from './dto/update-rate-location.dto';
 import { Http2ServerRequest } from 'http2';
 import { MongoQuery, MongoQueryModel } from 'nest-mongo-query-parser';
 
-@Controller('api/rate-location')
+@Controller('rate-location')
 export class RateLocationController {
   constructor(private readonly rateLocationService: RateLocationService) {}
 

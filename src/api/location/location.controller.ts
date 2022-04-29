@@ -7,7 +7,7 @@ import { Http2ServerRequest, Http2ServerResponse } from 'http2';
 import { ApiBody, ApiResponse } from '@nestjs/swagger';
 import { AppService } from 'src/app.service';
 
-@Controller('api/location')
+@Controller('location')
 export class LocationController {
   constructor(
     private readonly locationService: LocationService,
@@ -23,7 +23,6 @@ export class LocationController {
 
   @Get()
   findAll(@MongoQuery() query: MongoQueryModel) {
-    this.logger.log("zzzzz")
     return this.locationService.findAll(query);
   }
 

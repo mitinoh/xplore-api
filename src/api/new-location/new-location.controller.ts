@@ -6,7 +6,7 @@ import { MongoQuery, MongoQueryModel } from 'nest-mongo-query-parser';
 import { AuthService } from 'src/auth/auth.service';
 import { Http2ServerRequest } from 'http2';
 
-@Controller('api/new-location')
+@Controller('new-location')
 export class NewLocationController {
   constructor(private readonly newLocationService: NewLocationService) {}
 

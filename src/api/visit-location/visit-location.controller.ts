@@ -7,7 +7,7 @@ import { Http2ServerRequest } from 'http2';
 import { MongoQuery, MongoQueryModel } from 'nest-mongo-query-parser';
 
 
-@Controller('api/visit-location')
+@Controller('visit-location')
 export class VisitLocationController {
   constructor(
     private readonly visitLocationService: VisitLocationService,

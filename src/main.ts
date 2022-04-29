@@ -3,6 +3,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { useContainer } from 'class-validator';
+import { json, urlencoded } from 'express';
 import { AppModule } from './app.module';
 import getLogLevels from './shared/getLogLevels';
 
@@ -16,7 +17,10 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe())
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
-
+  app.setGlobalPrefix('api');
+  app.use(json({ limit: '50mb' }));
+  app.use(urlencoded({ extended: true, limit: '50mb' }))
+  
   // https://docs.nestjs.com/openapi/introduction
   const config = new DocumentBuilder()
   .setTitle('nj1')

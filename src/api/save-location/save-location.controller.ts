@@ -5,7 +5,7 @@ import { UpdateSaveLocationDto } from './dto/update-save-location.dto';
 import { MongoQuery, MongoQueryModel } from 'nest-mongo-query-parser';
 import { Http2ServerRequest } from 'http2';
 
-@Controller('api/save-location')
+@Controller('save-location')
 export class SaveLocationController {
   constructor(private readonly saveLocationService: SaveLocationService) {}
 

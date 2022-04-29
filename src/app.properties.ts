@@ -5,8 +5,29 @@ export const auth = {
     isFromDart: false,
     tokenValid: true
 }
+export const pathDir = {
+ ass: './../',
+ log: './../log/'
+}
+export const assetDir = {
+  location:"asset/location/",
+  badge:"asset/badge/"
+}
+export const logDir = {
+  info: "info/",
+  debug: "debug/",
+  error: "error/",
+}
 
-export const assetsDir = './../asset/'
-export const logDir = './../log/'
-export const logDatePattern = 'DD-MM-YYYY'
-export const logFileMaxSize = '20m'
+export const pth = {
+  location: pathDir.ass+assetDir.location,
+  badge: pathDir.ass+assetDir.badge,
+  info: pathDir.log+logDir.info,
+  debug: pathDir.log+logDir.debug,
+  err: pathDir.log+logDir.error,
+}
+
+export const logConf = {
+  logDatePattern : 'DD-MM-YYYY',
+  logFileMaxSize : '20m'
+}

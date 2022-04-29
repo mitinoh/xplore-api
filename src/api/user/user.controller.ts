@@ -5,7 +5,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { Http2ServerRequest } from 'http2';
 import { MongoQuery, MongoQueryModel } from 'nest-mongo-query-parser';
 
-@Controller('api/user')
+@Controller('user')
 export class UserController {
   constructor(
     private readonly userService: UserService,

@@ -1,26 +1,26 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { CreateImageDto } from './dto/create-image.dto';
-import { UpdateImageDto } from './dto/update-image.dto';
-
+import { pth } from '../../app.properties';
+const fs = require('fs')
 @Injectable()
 export class ImageService {
-  create(createImageDto: CreateImageDto) {
-    return 'This action adds a new image';
-  }
 
-  findAll() {
-    return `This action returns all image`;
-  }
+  constructor(  @Inject('winston') protected readonly logger: Logger) { }
 
-  findOne(id: number) {
-    return `This action returns a #${id} image`;
-  }
+  create(id: string, body: CreateImageDto) {
+    let buff = Buffer.from(body.base64.toString(), 'base64');
+    try {
+      
+      let path = pth[body.entity as keyof typeof pth]
 
-  update(id: number, updateImageDto: UpdateImageDto) {
-    return `This action updates a #${id} image`;
-  }
+      if (!fs.existsSync(path)){
+        fs.mkdirSync(path, { recursive: true });
+      }
 
-  remove(id: number) {
-    return `This action removes a #${id} image`;
+      fs.writeFile( path + id+'.jpg', buff,  function(err: any, result: any) {if (err) console.log(err)});
+    } catch (error) {
+      this.logger.error(error);
+    }
+    return 'Image added';
   }
 }
