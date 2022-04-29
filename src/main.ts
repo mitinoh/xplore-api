@@ -14,7 +14,12 @@ async function bootstrap() {
     {
       logger: getLogLevels(process.env.NODE_ENV === 'production')
     });
-  app.useGlobalPipes(new ValidationPipe())
+  app.useGlobalPipes(new ValidationPipe({
+    transformOptions: {
+      enableImplicitConversion: true, // allow conversion underneath
+    },
+  }))
+  
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
   app.setGlobalPrefix('api');
@@ -31,6 +36,6 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
 
-  await app.listen(3000);
+  await app.listen(3000); // TODO: se porta occupata cambiare porta e fare log in ogni caso 
 }
 bootstrap();

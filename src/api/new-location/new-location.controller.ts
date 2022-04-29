@@ -5,7 +5,9 @@ import { UpdateNewLocationDto } from './dto/update-new-location.dto';
 import { MongoQuery, MongoQueryModel } from 'nest-mongo-query-parser';
 import { AuthService } from 'src/auth/auth.service';
 import { Http2ServerRequest } from 'http2';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('new-location')
 @Controller('new-location')
 export class NewLocationController {
   constructor(private readonly newLocationService: NewLocationService) {}

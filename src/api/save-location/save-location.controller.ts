@@ -4,7 +4,9 @@ import { CreateSaveLocationDto } from './dto/create-save-location.dto';
 import { UpdateSaveLocationDto } from './dto/update-save-location.dto';
 import { MongoQuery, MongoQueryModel } from 'nest-mongo-query-parser';
 import { Http2ServerRequest } from 'http2';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('save-location')
 @Controller('save-location')
 export class SaveLocationController {
   constructor(private readonly saveLocationService: SaveLocationService) {}

@@ -1,19 +1,31 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
+import { Type } from "class-transformer";
+import { IsNumber, ValidateIf } from "class-validator";
 import { Document, Schema as MongooseSchema, Types } from "mongoose";
 
-export interface DayAvaiable {
-    day: number;
-    start: number;
-    end: number;
-}
-
 export class DayAvaiable {
-    @Prop()
+    @IsNumber()
+    //@ValidateIf(el =>  el >= 0 && el < 7) 
+    @ApiProperty({type: Number})
+    @Prop({type: Number})
+    @Type(() => Number)
     day: number
+
+
+    
+   // @ValidateIf(el =>  el >= 0 && el <= 24) 
+    @ApiProperty({type: Number})
     @Prop({ type:MongooseSchema.Types.Decimal128 })
+    @Type(() => Number)
+
+    
     start: number
+    //@ValidateIf(el =>  el >= 0 && el <= 24) 
+    @ApiProperty({type: Number})
     @Prop({ type:MongooseSchema.Types.Decimal128 })
+    @Type(() => Number)
+    @IsNumber()
     end: number
 }
 

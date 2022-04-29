@@ -4,9 +4,10 @@ import { CreateLocationDto } from './dto/create-location.dto';
 import { UpdateLocationDto } from './dto/update-location.dto';
 import { MongoQuery, MongoQueryModel } from 'nest-mongo-query-parser';
 import { Http2ServerRequest, Http2ServerResponse } from 'http2';
-import { ApiBody, ApiResponse } from '@nestjs/swagger';
+import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AppService } from 'src/app.service';
 
+@ApiTags('location')
 @Controller('location')
 export class LocationController {
   constructor(
@@ -31,15 +32,19 @@ export class LocationController {
     return this.locationService.findOne(id);
   }
 
-  @Put(':id')
+  @Patch(':id')
+  @ApiBody({
+    type: CreateLocationDto,
+    description: 'Store product structure',
+  })
   update(@Param('id') id: string, @Body() updateLocationDto: UpdateLocationDto) {
     return this.locationService.update(id, updateLocationDto);
   }
-
+/*
   @Delete(':id')
   remove(@Param('id') id: string) {
     this.logger.error("Forbidden")
     throw new HttpException("Forbidden", HttpStatus.FORBIDDEN);
     return this.locationService.remove(id);
-  }
+  }*/
 }

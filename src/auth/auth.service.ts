@@ -44,7 +44,7 @@ export class AuthService implements NestMiddleware {
                 });
         } 
         res.status(HttpStatus.BAD_REQUEST)
-        .send("saving " + JSON.stringify("errorer asdadsas"));
+        .send("saving " + JSON.stringify("error"));
     }
 
     getUserToken(req: any) {

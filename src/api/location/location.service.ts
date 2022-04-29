@@ -19,7 +19,10 @@ export class LocationService {
 
   async create(req: Http2ServerRequest, createLocationDto: CreateLocationDto) {
     try {
+      console.log(createLocationDto)
       let newCreateLocation = new this.locationModel({...createLocationDto});
+      console.log(newCreateLocation)
+      
       return await newCreateLocation.save();
     } catch (error) {
       this.logger.error(error)

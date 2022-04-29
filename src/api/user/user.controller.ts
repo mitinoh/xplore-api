@@ -4,7 +4,9 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Http2ServerRequest } from 'http2';
 import { MongoQuery, MongoQueryModel } from 'nest-mongo-query-parser';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('user')
 @Controller('user')
 export class UserController {
   constructor(

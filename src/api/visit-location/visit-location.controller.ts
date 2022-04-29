@@ -5,8 +5,9 @@ import { UpdateVisitLocationDto } from './dto/update-visit-location.dto';
 
 import { Http2ServerRequest } from 'http2';
 import { MongoQuery, MongoQueryModel } from 'nest-mongo-query-parser';
+import { ApiTags } from '@nestjs/swagger';
 
-
+@ApiTags('visit-location')
 @Controller('visit-location')
 export class VisitLocationController {
   constructor(

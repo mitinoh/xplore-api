@@ -1,11 +1,12 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { IsArray, IsEmpty, IsIn, IsInt, IsNotEmpty, IsNumber, NotEquals, notEquals, Validate, ValidateIf } from "class-validator";
+import { IsArray, IsEmpty, IsIn, IsInt, IsNotEmpty, IsNotEmptyObject, IsNumber, IsObject, NotEquals, notEquals, Validate, ValidateIf, ValidateNested } from "class-validator";
 import { Coordinate } from "../entities/coordinate.interface";
 import { DayAvaiable } from "../entities/dayavaiable.interface";
 import { CoordinateRule, CoordinateValidator } from "../validator/location.validator";
 import { Document, Schema as MongooseSchema, Types } from "mongoose";
 import { DayAvaiableRule } from "../validator/day-avaiable.validator";
+import { Prop } from "@nestjs/mongoose";
 
 export class CreateLocationDto {
 
@@ -20,10 +21,11 @@ export class CreateLocationDto {
     @CoordinateRule()
     coordinate: Coordinate;
 
-    @DayAvaiableRule()
     @ApiProperty()
-    @IsArray()
-    dayAvaiable: DayAvaiable[] = []
+    @ValidateNested()
+    @Type(() => DayAvaiable)
+    @IsObject()
+    dayAvaiable: DayAvaiable[] 
 
     @ValidateIf(el =>  el >= 0 && el < 5) 
     @ApiProperty()
@@ -33,7 +35,6 @@ export class CreateLocationDto {
     @ApiProperty()
     locationcategory: MongooseSchema.Types.ObjectId[] = []
 
-    @ApiProperty()
     cdate: number = Date.now();
 
 }

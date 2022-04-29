@@ -4,7 +4,9 @@ import { CreatePlanTripDto } from './dto/create-plan-trip.dto';
 import { UpdatePlanTripDto } from './dto/update-plan-trip.dto';
 import { Http2ServerRequest } from 'http2';
 import { MongoQuery, MongoQueryModel } from 'nest-mongo-query-parser';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('plan-trip')
 @Controller('plan-trip')
 export class PlanTripController {
   constructor(private readonly planTripService: PlanTripService) {}

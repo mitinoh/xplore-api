@@ -2,11 +2,7 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { IsInt, IsLatitude, IsLongitude } from "class-validator";
 
-export interface Coordinate {
-    lat: number;
-    lng: number;
-    alt: number;
-}
+
 
 export class Coordinate {
     @Prop()

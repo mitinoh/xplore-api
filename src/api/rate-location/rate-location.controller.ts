@@ -1,10 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UsePipes, ValidationPipe, Put } from '@nestjs/common';
 import { RateLocationService } from './rate-location.service';
 import { CreateRateLocationDto } from './dto/create-rate-location.dto';
 import { UpdateRateLocationDto } from './dto/update-rate-location.dto';
 import { Http2ServerRequest } from 'http2';
 import { MongoQuery, MongoQueryModel } from 'nest-mongo-query-parser';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('rate-location')
 @Controller('rate-location')
 export class RateLocationController {
   constructor(private readonly rateLocationService: RateLocationService) {}
