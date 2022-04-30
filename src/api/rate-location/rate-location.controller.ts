@@ -4,7 +4,7 @@ import { CreateRateLocationDto } from './dto/create-rate-location.dto';
 import { UpdateRateLocationDto } from './dto/update-rate-location.dto';
 import { Http2ServerRequest } from 'http2';
 import { MongoQuery, MongoQueryModel } from 'nest-mongo-query-parser';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('rate-location')
 @Controller('rate-location')
@@ -17,6 +17,9 @@ export class RateLocationController {
     return this.rateLocationService.create(req, createRateLocationDto);
   }
 
+
+  @ApiQuery({ name: 'uid', type: 'objectId', required: false })
+  @ApiQuery({ name: 'location', type: 'objectId', required: false })
   @Get()
   findAll(@MongoQuery() query: MongoQueryModel) {
     return this.rateLocationService.findAll(query);
@@ -28,6 +31,9 @@ export class RateLocationController {
   }
 
   @Patch(':id')
+  @ApiBody({
+    type: CreateRateLocationDto
+  })
   update(@Param('id') id: string, @Body() updateRateLocationDto: UpdateRateLocationDto) {
     return this.rateLocationService.update(id, updateRateLocationDto);
   }

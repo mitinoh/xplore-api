@@ -1,19 +1,20 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { isInt, IsNotEmpty, ValidateIf } from "class-validator";
+import { isInt, IsMongoId, IsNotEmpty, IsNumber, ValidateIf } from "class-validator";
 import { Document, Schema as MongooseSchema, Types } from "mongoose";
 
 export class CreateRateLocationDto {
 
-    @ApiProperty()
+    @ApiProperty({type: MongooseSchema.Types.ObjectId})
     @IsNotEmpty()
+    @IsMongoId()
     location: MongooseSchema.Types.ObjectId
 
-    @ApiProperty()
+    // TODO: Creare validatore 
+    @ApiProperty({type: Number})
     @IsNotEmpty()
-    @ValidateIf(el =>  el >= 0 && el <= 5) 
+    @IsNumber()
     rate: number;
 
-    @ApiProperty()
     cdate: number = Date.now();
 
 }

@@ -9,7 +9,5 @@ export class CreateImageDto {
 
     @ApiProperty({enum: ImageEntity})
     @IsNotEmpty()
-   // @EntityRule()
-    
-   entity: string;
+    entity: string;
 }

@@ -1,17 +1,19 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsArray, IsNotEmpty, IsNumber } from "class-validator";
+import { IsArray, IsMongoId, IsNotEmpty, IsNumber, IsString } from "class-validator";
 import { CoordinateRule } from "src/api/location/validator/location.validator";
 import { Document, Schema as MongooseSchema, Types } from "mongoose";
 
 export class CreateUserDto {
     @ApiProperty()
     @IsNotEmpty()
+    @IsString()
     name: string;
 
-    @ApiProperty()
+    @ApiProperty({type: [MongooseSchema.Types.ObjectId]})
+    @IsArray()
+    @IsMongoId({each: true})
     categoryPreferences: MongooseSchema.Types.ObjectId[] = []
 
-    @ApiProperty()
     cdate: number = Date.now();
 
 }

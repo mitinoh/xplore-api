@@ -1,6 +1,6 @@
 
 import { ApiProperty } from "@nestjs/swagger";
-import { IsArray, IsNotEmpty, IsNumber } from "class-validator";
+import { IsArray, IsNotEmpty, IsNumber, IsString } from "class-validator";
 import { Document, Schema as MongooseSchema, Types } from "mongoose";
 import { LocationCategory } from "src/api/location-category/entities/location-category.entity";
 import { Coordinate } from "src/api/location/entities/coordinate.interface";
@@ -8,44 +8,37 @@ import { DayAvaiable } from "src/api/location/entities/dayavaiable.interface";
 import { CoordinateRule } from "src/api/location/validator/location.validator";
 import { PlannedLocation } from "../entities/planned-location.interface";
 import { Location } from "src/api/location/entities/location.entity";
-import { PlannedLocationInfo } from "../entities/planned-location-info.interface";
 export class CreatePlanTripDto {
 
     @ApiProperty()
     @IsNotEmpty()
+    @IsString()
     tripName: string;
 
-    @ApiProperty()
+    @ApiProperty({type: Date})
     @IsNotEmpty()
     goneDate: Date;
 
-    @ApiProperty()
+    @ApiProperty({type: Date})
     @IsNotEmpty()
     returnDate: Date;
 
-    @ApiProperty()
+    @ApiProperty({type: Coordinate})
     @CoordinateRule()
     coordinate: Coordinate;
 
-    @ApiProperty()
+    @ApiProperty({type: Number})
     @IsNumber()
     distance: number;
 
-    @ApiProperty()
+    @ApiProperty({type: [PlannedLocation]})
     @IsArray()
     plannedLocation: PlannedLocation[]
-/*
-    @ApiProperty()
-    @IsArray()
-    plannedLocationInfo: PlannedLocationInfo[]
-    
-    */
-    @ApiProperty()
+
+    @ApiProperty({type: [PlannedLocation]})
     @IsArray()
     avoidCategory: LocationCategory[]
 
-
-    @ApiProperty()
     cdate: number = Date.now();
 
 }

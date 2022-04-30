@@ -1,21 +1,25 @@
 
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { ApiProperty } from "@nestjs/swagger";
 import { Transform, Type } from "class-transformer";
 import { Document, Schema as MongooseSchema, Types } from "mongoose";
 
 @Schema()
 export class User {
-    @Prop()
+    @ApiProperty({type: MongooseSchema.Types.ObjectId})
+    @Prop(() => MongooseSchema.Types.ObjectId)
     @Transform(({ value }) => value.toString())
     id: MongooseSchema.Types.ObjectId
     
+    @ApiProperty({type: String})
     @Prop({required: true})
     name: string
 
-    @Prop()
+    @ApiProperty({type: String})
+    @Prop({required: true})
     fid: string
 
-    @Prop()
+    @Prop({type: Date})
     cdate: Date
 }
 

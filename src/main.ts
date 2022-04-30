@@ -36,6 +36,6 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
 
-  await app.listen(3000); // TODO: se porta occupata cambiare porta e fare log in ogni caso 
+  await app.listen(3000); 
 }
 bootstrap();

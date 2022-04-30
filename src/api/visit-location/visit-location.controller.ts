@@ -5,7 +5,7 @@ import { UpdateVisitLocationDto } from './dto/update-visit-location.dto';
 
 import { Http2ServerRequest } from 'http2';
 import { MongoQuery, MongoQueryModel } from 'nest-mongo-query-parser';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('visit-location')
 @Controller('visit-location')
@@ -20,6 +20,9 @@ export class VisitLocationController {
     return this.visitLocationService.create(req, createVisitLocationDto);
   }
 
+
+  @ApiQuery({ name: 'uid', type: 'objectId', required: false })
+  @ApiQuery({ name: 'location', type: 'objectId', required: false })
   @Get()
   findAll(@MongoQuery() query: MongoQueryModel) {
     return this.visitLocationService.findAll(query);
@@ -29,12 +32,15 @@ export class VisitLocationController {
   findOne(@Param('id') id: string) {
     return this.visitLocationService.findOne(id);
   }
-
+/*
   @Patch(':id')
+  @ApiBody({
+    type: CreateVisitLocationDto
+  })
   update(@Param('id') id: string, @Body() updateVisitLocationDto: UpdateVisitLocationDto) {
     return this.visitLocationService.update(id, updateVisitLocationDto);
   }
-
+*/
   @Delete(':id')
   remove(@Param('id') id: string) {
     this.logger.error("Forbidden")

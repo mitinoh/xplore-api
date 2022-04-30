@@ -4,7 +4,7 @@ import { CreateSaveLocationDto } from './dto/create-save-location.dto';
 import { UpdateSaveLocationDto } from './dto/update-save-location.dto';
 import { MongoQuery, MongoQueryModel } from 'nest-mongo-query-parser';
 import { Http2ServerRequest } from 'http2';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('save-location')
 @Controller('save-location')
@@ -17,6 +17,8 @@ export class SaveLocationController {
     return this.saveLocationService.create(req, createSaveLocationDto);
   }
 
+  @ApiQuery({ name: 'uid', type: 'objecId', required: false })
+  @ApiQuery({ name: 'location', type: 'objectId', required: false })
   @Get()
   findAll(@MongoQuery() query: MongoQueryModel) {
     return this.saveLocationService.findAll(query);
@@ -26,12 +28,16 @@ export class SaveLocationController {
   findOne(@Param('id') id: string) {
     return this.saveLocationService.findOne(id);
   }
-
+/*
   @Patch(':id')
+  @ApiBody({
+    type: CreateSaveLocationDto
+  })
   update(@Param('id') id: string, @Body() updateSaveLocationDto: UpdateSaveLocationDto) {
     return this.saveLocationService.update(id, updateSaveLocationDto);
   }
 
+  */
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.saveLocationService.remove(id);

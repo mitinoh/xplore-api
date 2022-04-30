@@ -12,7 +12,7 @@ import { IsArray, ValidateNested } from "class-validator";
 export class Location {
 
     @ApiProperty({type: MongooseSchema.Types.ObjectId})
-    @Prop()
+    @Prop(() => MongooseSchema.Types.ObjectId)
     @Transform(({ value }) => value.toString())
     id: MongooseSchema.Types.ObjectId
 

@@ -8,49 +8,48 @@ import { Coordinate } from "src/api/location/entities/coordinate.interface";
 import { PlannedLocation, PlannedLocationSchema } from "./planned-location.interface";
 
 import { Location } from "src/api/location/entities/location.entity";
-import { PlannedLocationInfo } from "./planned-location-info.interface";
 import { User } from "src/api/user/entities/user.entity";
+import { ApiProperty } from "@nestjs/swagger";
 @Schema()
 export class PlanTrip {
     @Prop()
     @Transform(({ value }) => value.toString())
     id: MongooseSchema.Types.ObjectId
 
+    @ApiProperty()
     @Prop({required: true})
     tripName: string
 
+    @ApiProperty({type: Date})
     @Prop({type: Date})
     goneDate: Date
 
+    @ApiProperty({type: Date})
     @Prop({type: Date})
     returnDate: Date
 
+    @ApiProperty({type: Coordinate})
     @Prop({required: true, type: Coordinate})
     coordinate: Coordinate
 
+    @ApiProperty({type: Number})
     @Prop()
     distance: number
 
-    
+    @ApiProperty({type: [PlannedLocation]})
     @Prop([{ type: PlannedLocation }])
     plannedLocation: Object;
-
-/*
-    @Prop({type: PlannedLocationInfo})
-    @Type(() => PlannedLocationInfo)
-    plannedLocationInfo: PlannedLocationInfo[];
-*/
     
+    @ApiProperty({type: MongooseSchema.Types.ObjectId})
     @Prop([{ type: MongooseSchema.Types.ObjectId, ref: LocationCategory.name }])
     @Type(() => LocationCategory)
     avoidCategory: LocationCategory
 
-
+    @ApiProperty({type: MongooseSchema.Types.ObjectId})
     @Prop({ type: MongooseSchema.Types.ObjectId, ref: User.name })
     @Type(() => User)
     uid: User
 
-    
     @Prop()
     cdate: Date
 }

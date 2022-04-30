@@ -4,7 +4,7 @@ import { CreatePlanTripDto } from './dto/create-plan-trip.dto';
 import { UpdatePlanTripDto } from './dto/update-plan-trip.dto';
 import { Http2ServerRequest } from 'http2';
 import { MongoQuery, MongoQueryModel } from 'nest-mongo-query-parser';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('plan-trip')
 @Controller('plan-trip')
@@ -17,6 +17,12 @@ export class PlanTripController {
     return this.planTripService.create(req, createPlanTripDto);
   }
 
+
+  @ApiQuery({ name: 'tripName', type: 'string', required: false })
+  @ApiQuery({ name: 'goneDate', type: 'date', required: false })
+  @ApiQuery({ name: 'returnDate', type: 'date', required: false })
+  @ApiQuery({ name: 'uid', type: 'objectId', required: false })
+  @ApiQuery({ name: 'cdate', type: 'date', required: false })
   @Get()
   findAll( @MongoQuery() query: MongoQueryModel) {
     return this.planTripService.findAll( query);
@@ -28,6 +34,9 @@ export class PlanTripController {
   }
 
   @Patch(':id')
+  @ApiBody({
+    type: CreatePlanTripDto
+  })
   update(@Param('id') id: string, @Body() updatePlanTripDto: UpdatePlanTripDto) {
     return this.planTripService.update(id, updatePlanTripDto);
   }
