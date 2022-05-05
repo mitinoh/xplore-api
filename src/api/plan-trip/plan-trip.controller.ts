@@ -24,8 +24,8 @@ export class PlanTripController {
   @ApiQuery({ name: 'uid', type: 'objectId', required: false })
   @ApiQuery({ name: 'cdate', type: 'date', required: false })
   @Get()
-  findAll( @MongoQuery() query: MongoQueryModel) {
-    return this.planTripService.findAll( query);
+  findAll(@Req() req:Http2ServerRequest, @MongoQuery() query: MongoQueryModel) {
+    return this.planTripService.findAll(req, query);
   }
 
   @Get(':id')

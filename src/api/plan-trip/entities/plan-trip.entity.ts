@@ -12,6 +12,8 @@ import { User } from "src/api/user/entities/user.entity";
 import { ApiProperty } from "@nestjs/swagger";
 @Schema()
 export class PlanTrip {
+
+    @ApiProperty({type: MongooseSchema.Types.ObjectId})
     @Prop()
     @Transform(({ value }) => value.toString())
     id: MongooseSchema.Types.ObjectId

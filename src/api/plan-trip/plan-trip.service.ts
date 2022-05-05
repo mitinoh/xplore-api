@@ -13,6 +13,7 @@ import { PipelineStage } from 'mongoose';
 import { ObjectId } from 'bson';
 import { Document, Schema as MongooseSchema, Types } from "mongoose";
 import { skip } from 'rxjs';
+import { User } from '../user/entities/user.entity';
 
 @Injectable()
 export class PlanTripService {
@@ -25,16 +26,19 @@ export class PlanTripService {
 
   async create(req:Http2ServerRequest, createPlanTripDto: CreatePlanTripDto) {
       try {
-        let newCreatePlanTrip = new this.newPlanTripnModel({...createPlanTripDto, uid: "626324e42aac94908e6953b8"});
+        
+      let uid: any =await this.userService.getUserObjectId(req) ?? '';
+        let newCreatePlanTrip = new this.newPlanTripnModel({...createPlanTripDto, uid: uid});
         return await newCreatePlanTrip.save();
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.EXPECTATION_FAILED);
     }
   }
 
-  async findAll(query: MongoQueryModel) {
+  async findAll(req: Http2ServerRequest, query: MongoQueryModel) {
     try {
-      
+      let user: any = await this.userService.getUserObjectId(req)
+      query.filter["uid"] = user._id.toString()
       return await this.newPlanTripnModel
       .aggregate(this.getMongoAggregation(query))
       //  .find(query.filter)
@@ -43,7 +47,7 @@ export class PlanTripService {
       //   .sort(query.sort)
       //   .select(query.select) 
     } catch (error) {
-      this.logger.error(error)
+      this.logger.error(error.toString())
       throw new HttpException(error.message, HttpStatus.EXPECTATION_FAILED);
     }
   }
@@ -87,7 +91,7 @@ export class PlanTripService {
     let uidAggregation: PipelineStage = 
     {
       '$match': {
-        'uid':  new  ObjectId(query.filter["uid"])
+        'uid':  new ObjectId(query.filter["uid"])
       }
     }
 
@@ -104,6 +108,7 @@ export class PlanTripService {
         
       }
     }  
+
     else if (query.filter.progress === false){
         returnDateAggregation = 
         {
@@ -116,12 +121,11 @@ export class PlanTripService {
       }
     }
 
+    console.log(returnDateAggregation)
 
     let limitAggregation: PipelineStage = { '$limit': query.limit ?? 999999999 }
     let skipAggregation: PipelineStage = { '$skip': query.skip ?? 0 }
 
-
-    console.log(query)
 
     let aggregation: PipelineStage[] = [
 

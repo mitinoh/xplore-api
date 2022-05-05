@@ -1,4 +1,4 @@
-import { HttpStatus, Inject, Injectable, Logger, NestMiddleware } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable, Logger, NestMiddleware } from '@nestjs/common';
 import * as firebase from 'firebase-admin'
 import { UserDocument, UserSchema } from 'src/api/user/entities/user.entity';
 import * as serviceAccount from './firebaseServiceAccount.json'
@@ -48,16 +48,18 @@ export class AuthService implements NestMiddleware {
     }
 
     getUserToken(req: any) {
-        const token = req.headers.authorization;
-       
+            const token = req.headers.authorization;
        return this.defaultApp.auth().verifyIdToken(token)
                 .then(async (decodeToken: any) => {
-                    return decodeToken.fid
+                    return decodeToken.uid
                     
                 }).catch((error: any) => {
+                    console.log("err")
                     this.logger.error(error)
                     return "";
                 });
+    
+       
     }
     
     private accessDenied(url: string, res: Response) {
