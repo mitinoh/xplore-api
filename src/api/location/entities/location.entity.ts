@@ -11,6 +11,11 @@ import { IsArray, ValidateNested } from "class-validator";
 @Schema({ /* timestamps: true , collection: "EVENTS_COLLECTION" */ })
 export class Location {
 
+
+    @Prop(() => MongooseSchema.Types.ObjectId)
+    _id: MongooseSchema.Types.ObjectId
+
+
     @ApiProperty({type: MongooseSchema.Types.ObjectId})
     @Prop(() => MongooseSchema.Types.ObjectId)
     @Transform(({ value }) => value.toString())
@@ -43,6 +48,13 @@ export class Location {
     @Type(() => LocationCategory)
     locationCategory: LocationCategory[]
     
+
+    @ApiProperty({type: Boolean})
+    @Prop()
+    saved: boolean
+
+
+
     @Prop({type: Date})
     cdate: Date
 }

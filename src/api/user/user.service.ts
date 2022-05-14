@@ -87,7 +87,10 @@ export class UserService {
   async getUserObjectId(req: any) {
     try {
       let fid: string = await this.authService.getUserToken(req) 
-      return await this.findByFid(fid)
+      console.log(fid)
+      if (fid && fid != null && fid.trim() != "")
+        return await this.findByFid(fid)
+      return ""
     } catch (error) {
       this.logger.error(error)
       throw new HttpException(error.message, HttpStatus.EXPECTATION_FAILED);

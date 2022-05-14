@@ -49,15 +49,18 @@ export class AuthService implements NestMiddleware {
 
     getUserToken(req: any) {
             const token = req.headers.authorization;
-       return this.defaultApp.auth().verifyIdToken(token)
-                .then(async (decodeToken: any) => {
-                    return decodeToken.uid
-                    
-                }).catch((error: any) => {
-                    console.log("err")
-                    this.logger.error(error)
-                    return "";
-                });
+            if(token && token != null && token.trim() != "")
+                return this.defaultApp.auth().verifyIdToken(token)
+                    .then(async (decodeToken: any) => {
+                        return decodeToken.uid
+                        
+                    }).catch((error: any) => {
+                        console.log("err")
+                        this.logger.error(error)
+                        return "";
+                    });
+            else 
+                return ""
     
        
     }

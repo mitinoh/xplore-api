@@ -15,6 +15,7 @@ import { UserService } from '../user/user.service';
     ]),
   ],
   controllers: [SaveLocationController],
-  providers: [SaveLocationService, UserService]
+  providers: [SaveLocationService, UserService],
+  exports: [SaveLocationModule]
 })
 export class SaveLocationModule {}

@@ -39,7 +39,7 @@ export class SaveLocationController {
 
   */
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.saveLocationService.remove(id);
+  remove(@Req() req: Http2ServerRequest, @Param('id') id: string) {
+    return this.saveLocationService.remove(req, id);
   }
 }

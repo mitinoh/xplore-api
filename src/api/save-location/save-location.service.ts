@@ -68,10 +68,12 @@ export class SaveLocationService {
     }
   }
 
-  async remove(id: string) {
+  async remove(req: Http2ServerRequest, id: string) {
     try {
+
       let objId = new mongoose.Types.ObjectId(id)
-      let ret = await this.saveLocationModel.deleteOne({ _id: objId })
+      let uid: any =await this.userService.getUserObjectId(req) ?? '';
+      let ret = await this.saveLocationModel.deleteOne({ locationId: objId, uid: uid._id.toString() })
       return ret.deletedCount > 0
     } catch (error) {
       this.logger.error(error)

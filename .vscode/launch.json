@@ -20,5 +20,8 @@
             "cwd": "${workspaceRoot}",
             "console": "integratedTerminal",
         }
+    ],
+    "runtimeArgs": [
+        "--preserve-symlinks"
     ]
 }
