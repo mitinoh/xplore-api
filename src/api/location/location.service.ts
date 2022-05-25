@@ -40,8 +40,8 @@ export class LocationService {
   async findAll(req: Http2ServerRequest, query: MongoQueryModel) {
     try {
 
-
       return await this.locationModel
+
         .find(query.filter)
         .populate('locationCategory')
         .limit(query.limit)
