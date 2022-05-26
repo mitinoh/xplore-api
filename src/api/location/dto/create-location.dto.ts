@@ -17,6 +17,10 @@ export class CreateLocationDto {
     @IsString()
     desc: string = "";
 
+    @ApiProperty()
+    @IsString()
+    indication: string = "";
+
     @ApiProperty({type: Coordinate})
     @IsNotEmpty()
     coordinate: Coordinate;
@@ -25,7 +29,7 @@ export class CreateLocationDto {
     @ValidateNested({each: true})
     dayAvaiable: DayAvaiable[] 
 
-  //  @ValidateIf(el =>  el >= 0 && el < 5) // TODO: Creare validatore 
+    //  @ValidateIf(el =>  el >= 0 && el < 5) // TODO: Creare validatore 
     @ApiProperty({type: [Number]})
     @IsNumber({},{each: true})
     periodAvaiable: number[] = []

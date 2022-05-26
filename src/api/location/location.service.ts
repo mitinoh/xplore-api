@@ -1,19 +1,19 @@
 import { HttpException, HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { CreateLocationDto } from './dto/create-location.dto';
-import { UpdateLocationDto } from './dto/update-location.dto';
-import { LocationDocument, Location } from './entities/location.entity';
+import { Http2ServerRequest } from 'http2';
+import mongoose from 'mongoose';
+
 import { Model } from "mongoose";
 import { MongoQueryModel } from 'nest-mongo-query-parser';
-import * as mongoose from 'mongoose'
-import { Http2ServerRequest } from 'http2';
-import { SaveLocation, SaveLocationDocument } from '../save-location/entities/save-location.entity';
-import { Document, Schema as MongooseSchema, Types } from "mongoose";
 import { AuthService } from 'src/auth/auth.service';
-import { UserService } from '../user/user.service';
 import shuffleArray from 'src/shared/utils';
-import { of } from 'rxjs';
+import { SaveLocation, SaveLocationDocument } from '../save-location/entities/save-location.entity';
+import { UserService } from '../user/user.service';
+import { CreateLocationDto } from './dto/create-location.dto';
+import { UpdateLocationDto } from './dto/update-location.dto';
+import { Location, LocationDocument } from './entities/location.entity';
 
+import { ObjectId } from 'bson';
 @Injectable()
 export class LocationService {
 
@@ -28,11 +28,13 @@ export class LocationService {
 
   async create(req: Http2ServerRequest, createLocationDto: CreateLocationDto) {
     try {
-      let newCreateLocation = new this.locationModel({ ...createLocationDto });
 
+      // REVIEW: ricordarsi di inserire nel db user xplore con questo objId
+      let uid: any = await this.userService.getUserObjectId(req) ?? new ObjectId('628fd24dbbe643a8f1816138');
+      let newCreateLocation = new this.locationModel({ ...createLocationDto, insertUid: uid });
       return await newCreateLocation.save();
     } catch (error) {
-      this.logger.error(error)
+      this.logger.error(error.message)
       throw new HttpException(error.message, HttpStatus.EXPECTATION_FAILED);
     }
   }
@@ -44,10 +46,11 @@ export class LocationService {
 
         .find(query.filter)
         .populate('locationCategory')
+        .populate('insertUid')
         .limit(query.limit)
         .skip(query.skip)
         .sort(query.sort)
-        .select(query.select).then(async (locations: Location[]) => {
+        .select(query.select).then(async (locations: any[]) => {
           let uid: any = await this.userService.getUserObjectId(req) ?? '';
           // FIXME: verificare se req contiene token con uid
           if (uid != '') {
@@ -64,7 +67,7 @@ export class LocationService {
         })
 
     } catch (error) {
-      this.logger.error(error)
+      this.logger.error(error.message)
       throw new HttpException(error.message, HttpStatus.EXPECTATION_FAILED);
     }
   }

@@ -1,21 +1,20 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Put, ValidationPipe,UsePipes, Res, Req, HttpException, HttpStatus, Logger, Inject } from '@nestjs/common';
-import { LocationService } from './location.service';
+import { Body, Controller, Get, Inject, Logger, Param, Patch, Post, Req, UsePipes, ValidationPipe } from '@nestjs/common';
+import { ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { Http2ServerRequest } from 'http2';
+import { MongoQuery, MongoQueryModel } from 'nest-mongo-query-parser';
 import { CreateLocationDto } from './dto/create-location.dto';
 import { UpdateLocationDto } from './dto/update-location.dto';
-import { MongoQuery, MongoQueryModel } from 'nest-mongo-query-parser';
-import { Http2ServerRequest, Http2ServerResponse } from 'http2';
-import { ApiBody, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { AppService } from 'src/app.service';
+import { LocationService } from './location.service';
 
 @ApiTags('location')
 @Controller('location')
 export class LocationController {
   constructor(
     private readonly locationService: LocationService,
-    @Inject('winston')  private readonly logger: Logger,
-    ) {}
+    @Inject('winston') private readonly logger: Logger,
+  ) { }
 
-  
+
   @Post()
   @UsePipes(new ValidationPipe({ transform: true }))
   create(@Req() req: Http2ServerRequest, @Body() createLocationDto: CreateLocationDto) {
@@ -24,6 +23,7 @@ export class LocationController {
 
   @ApiQuery({ name: 'name', type: 'string', required: false })
   @ApiQuery({ name: 'desc', type: 'string', required: false })
+  @ApiQuery({ name: 'indication', type: 'string', required: false })
   @ApiQuery({ name: 'coordinate.lat', type: 'number', required: false })
   @ApiQuery({ name: 'coordinate.lbg', type: 'number', required: false })
   @ApiQuery({ name: 'coordinate.alt', type: 'number', required: false })
@@ -50,11 +50,11 @@ export class LocationController {
   update(@Param('id') id: string, @Body() updateLocationDto: UpdateLocationDto) {
     return this.locationService.update(id, updateLocationDto);
   }
-/*
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    this.logger.error("Forbidden")
-    throw new HttpException("Forbidden", HttpStatus.FORBIDDEN);
-    return this.locationService.remove(id);
-  }*/
+  /*
+    @Delete(':id')
+    remove(@Param('id') id: string) {
+      this.logger.error("Forbidden")
+      throw new HttpException("Forbidden", HttpStatus.FORBIDDEN);
+      return this.locationService.remove(id);
+    }*/
 }

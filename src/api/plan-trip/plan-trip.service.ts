@@ -128,8 +128,6 @@ export class PlanTripService {
       }
     }
 
-    console.log(returnDateAggregation)
-
     let limitAggregation: PipelineStage = { '$limit': query.limit ?? 999999999 }
     let skipAggregation: PipelineStage = { '$skip': query.skip ?? 0 }
 
