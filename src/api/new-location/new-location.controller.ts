@@ -1,16 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UsePipes, ValidationPipe } from '@nestjs/common';
-import { NewLocationService } from './new-location.service';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Req, UsePipes, ValidationPipe } from '@nestjs/common';
+import { ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { Http2ServerRequest } from 'http2';
+import { MongoQuery, MongoQueryModel } from 'nest-mongo-query-parser';
 import { CreateNewLocationDto } from './dto/create-new-location.dto';
 import { UpdateNewLocationDto } from './dto/update-new-location.dto';
-import { MongoQuery, MongoQueryModel } from 'nest-mongo-query-parser';
-import { AuthService } from 'src/auth/auth.service';
-import { Http2ServerRequest } from 'http2';
-import { ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { NewLocationService } from './new-location.service';
 
 @ApiTags('new-location')
 @Controller('new-location')
 export class NewLocationController {
-  constructor(private readonly newLocationService: NewLocationService) {}
+  constructor(private readonly newLocationService: NewLocationService) { }
 
   @Post()
   @UsePipes(new ValidationPipe({ transform: true }))
@@ -20,6 +19,7 @@ export class NewLocationController {
 
   @ApiQuery({ name: 'name', type: 'string', required: false })
   @ApiQuery({ name: 'desc', type: 'string', required: false })
+  @ApiQuery({ name: 'indication', type: 'string', required: false })
   @ApiQuery({ name: 'uid', type: 'objectId', required: false })
   @ApiQuery({ name: 'locationCategory', type: 'objectId', required: false })
   @ApiQuery({ name: 'cdate', type: 'Date', required: false })
