@@ -1,13 +1,12 @@
 import { HttpException, HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Http2ServerRequest } from 'http2';
+import mongoose, { Model } from 'mongoose';
+import { MongoQueryModel } from 'nest-mongo-query-parser';
+import { AuthService } from 'src/auth/auth.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User, UserDocument } from './entities/user.entity';
-import { Model } from "mongoose";
-import { AuthService } from 'src/auth/auth.service';
-import { MongoQueryModel } from 'nest-mongo-query-parser';
-import mongoose from 'mongoose';
 
 @Injectable()
 export class UserService {
@@ -20,11 +19,11 @@ export class UserService {
   async create(req: Http2ServerRequest, createUserDto: CreateUserDto) {
     try {
       let fid: string = await this.authService.getUserToken(req);
-      let newUser = new this.userModel({...createUserDto, fid: fid}); 
+      let newUser = new this.userModel({ ...createUserDto, fid: fid });
       return await newUser.save();
     } catch (error) {
       this.logger.error(error)
-      throw new HttpException(error.message,HttpStatus.EXPECTATION_FAILED);
+      throw new HttpException(error.message, HttpStatus.EXPECTATION_FAILED);
     }
   }
 
@@ -36,9 +35,9 @@ export class UserService {
         .skip(query.skip)
         .sort(query.sort)
         .select(query.select)
-    } catch (error) { 
+    } catch (error) {
       this.logger.error(error)
-      throw new HttpException(error.message,HttpStatus.EXPECTATION_FAILED);
+      throw new HttpException(error.message, HttpStatus.EXPECTATION_FAILED);
     }
   }
 
@@ -47,7 +46,7 @@ export class UserService {
       return await this.userModel.findOne({ _id: id });
     } catch (error) {
       this.logger.error(error)
-      throw new HttpException(error.message,HttpStatus.EXPECTATION_FAILED);
+      throw new HttpException(error.message, HttpStatus.EXPECTATION_FAILED);
     }
   }
 
@@ -56,7 +55,7 @@ export class UserService {
       return await this.userModel.findOne({ fid: id });
     } catch (error) {
       this.logger.error(error)
-      throw new HttpException(error.message,HttpStatus.EXPECTATION_FAILED);
+      throw new HttpException(error.message, HttpStatus.EXPECTATION_FAILED);
     }
   }
 
@@ -68,7 +67,7 @@ export class UserService {
       })
     } catch (error) {
       this.logger.error(error)
-      throw new HttpException(error.message,HttpStatus.EXPECTATION_FAILED);
+      throw new HttpException(error.message, HttpStatus.EXPECTATION_FAILED);
     }
   }
 
@@ -79,16 +78,19 @@ export class UserService {
       return ret.deletedCount > 0
     } catch (error) {
       this.logger.error(error)
-      throw new HttpException(error.message,HttpStatus.EXPECTATION_FAILED);
+      throw new HttpException(error.message, HttpStatus.EXPECTATION_FAILED);
     }
   }
 
 
   async getUserObjectId(req: any) {
     try {
-      let fid: string = await this.authService.getUserToken(req) 
-      if (fid && fid != null && fid.trim() != "")
-        return await this.findByFid(fid)
+      let fid: string = await this.authService.getUserToken(req)
+      if (fid && fid != null && fid.trim() != "") {
+
+        let userObj = await this.findByFid(fid)
+        return userObj._id
+      }
       return undefined
     } catch (error) {
       this.logger.error(error)

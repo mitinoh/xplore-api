@@ -27,6 +27,12 @@ export class NewLocation {
     @ApiProperty({ type: String })
     @Prop({ type: String })
     @IsString()
+    address: string
+
+
+    @ApiProperty({ type: String })
+    @Prop({ type: String })
+    @IsString()
     indication: string
 
     @ApiProperty({ type: MongooseSchema.Types.ObjectId })

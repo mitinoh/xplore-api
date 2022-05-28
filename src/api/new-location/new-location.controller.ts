@@ -19,6 +19,7 @@ export class NewLocationController {
 
   @ApiQuery({ name: 'name', type: 'string', required: false })
   @ApiQuery({ name: 'desc', type: 'string', required: false })
+  @ApiQuery({ name: 'address', type: 'string', required: false })
   @ApiQuery({ name: 'indication', type: 'string', required: false })
   @ApiQuery({ name: 'uid', type: 'objectId', required: false })
   @ApiQuery({ name: 'locationCategory', type: 'objectId', required: false })

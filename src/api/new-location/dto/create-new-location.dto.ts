@@ -19,6 +19,10 @@ export class CreateNewLocationDto {
     @IsString()
     indication: string = "";
 
+    @ApiProperty()
+    @IsString()
+    address: string = "";
+
     @ApiProperty({type: [MongooseSchema.Types.ObjectId]})
     @IsArray()
     @IsMongoId({each: true})
