@@ -42,6 +42,13 @@ export class SaveLocationService {
             model: 'LocationCategory'
           }
         })
+        .populate({
+          path: 'location',
+          populate: {
+            path: 'insertUid',
+            model: 'User'
+          }
+        })
         .limit(query.limit)
         .skip(query.skip)
         .sort(query.sort)
