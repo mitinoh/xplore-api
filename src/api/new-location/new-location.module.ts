@@ -6,6 +6,7 @@ import { NewLocation, NewLocationSchema } from './entities/new-location.entity';
 import { AuthService } from 'src/auth/auth.service';
 import { User, UserSchema } from '../user/entities/user.entity';
 import { UserService } from '../user/user.service';
+import { ImageService } from '../image/image.service';
 
 @Module({  
   imports: [
@@ -15,6 +16,6 @@ import { UserService } from '../user/user.service';
   ]),
 ],
   controllers: [NewLocationController],
-  providers: [NewLocationService, UserService]
+  providers: [NewLocationService, UserService, ImageService]
 })
 export class NewLocationModule {}

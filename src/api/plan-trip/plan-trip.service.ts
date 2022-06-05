@@ -108,7 +108,7 @@ export class PlanTripService {
       returnDateAggregation =
       {
         '$match': {
-          'goneDate': {
+          'returnDate': {
             '$gt': new Date()
           }
         }
@@ -264,6 +264,16 @@ export class PlanTripService {
       skipAggregation,
       limitAggregation
     ]
+    console.log(returnDateAggregation);
     return aggregation
   }
+
+  getYesterdayDate() {
+    return new Date(new Date().getTime() - 24 * 60 * 60 * 1000);
+  }
+
+  getTomorrowDate() {
+    return new Date(new Date().getTime() + 24 * 60 * 60 * 1000);
+  }
+
 }

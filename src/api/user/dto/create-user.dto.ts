@@ -9,6 +9,10 @@ export class CreateUserDto {
     @IsString()
     name: string;
 
+    @ApiProperty()
+    @IsString()
+    bio: string;
+
     @ApiProperty({type: [MongooseSchema.Types.ObjectId]})
     @IsArray()
     @IsMongoId({each: true})

@@ -4,6 +4,7 @@ import { Http2ServerRequest } from 'http2';
 import mongoose, { Model } from 'mongoose';
 import { MongoQueryModel } from 'nest-mongo-query-parser';
 import { AuthService } from 'src/auth/auth.service';
+import { ImageService } from '../image/image.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User, UserDocument } from './entities/user.entity';
@@ -14,7 +15,8 @@ export class UserService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     @Inject('winston') private readonly logger: Logger,
-    private authService: AuthService) { }
+    private authService: AuthService,
+    private imageService: ImageService) { }
 
   async create(req: Http2ServerRequest, createUserDto: CreateUserDto) {
     try {
@@ -59,9 +61,15 @@ export class UserService {
     }
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto) {
+  async update(req: Http2ServerRequest, updateUserDto: UpdateUserDto) {
     try {
-      return await this.userModel.findOneAndUpdate({ _id: id },
+      let uid: any = await this.getUserObjectId(req) ?? '';
+      let base64: string = updateUserDto.base64;
+      delete updateUserDto.base64
+
+
+      this.imageService.create(uid, {base64: base64, entity: "user"})
+      return await this.userModel.findOneAndUpdate({ _id: uid },
         updateUserDto, {
         new: false
       })
