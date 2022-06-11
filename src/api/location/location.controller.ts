@@ -33,10 +33,20 @@ export class LocationController {
   @ApiQuery({ name: 'dayAvaiable.end', type: 'number', required: false })
   @ApiQuery({ name: 'locationCategory', type: 'objectId', required: false })
   @ApiQuery({ name: 'cdate', type: 'date', required: false })
+
   @Get()
   findAll(@Req() req: Http2ServerRequest, @MongoQuery() query: MongoQueryModel) {
     return this.locationService.findAll(req, query);
   }
+
+  @Get('/:operation')
+  find(@Req() req: Http2ServerRequest, @MongoQuery() query: MongoQueryModel, @Param("operation") operation: string) {
+    console.log(operation)
+    if (operation && operation.toLowerCase() == "uploaded")
+      return this.locationService.findAllUploaded(req, query);
+  }
+
+
 
   @Get(':id')
   findOne(@Param('id') id: string) {

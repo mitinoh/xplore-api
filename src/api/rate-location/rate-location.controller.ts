@@ -21,8 +21,8 @@ export class RateLocationController {
   @ApiQuery({ name: 'uid', type: 'objectId', required: false })
   @ApiQuery({ name: 'location', type: 'objectId', required: false })
   @Get()
-  findAll(@MongoQuery() query: MongoQueryModel) {
-    return this.rateLocationService.findAll(query);
+  findAll(@Req() req: Http2ServerRequest, @MongoQuery() query: MongoQueryModel) {
+    return this.rateLocationService.findAll(req, query);
   }
 
   @Get(':id')

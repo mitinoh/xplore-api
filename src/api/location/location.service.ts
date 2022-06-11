@@ -41,7 +41,6 @@ export class LocationService {
 
   async findAll(req: Http2ServerRequest, query: MongoQueryModel) {
     try {
-
       return await this.locationModel
 
         .find(query.filter)
@@ -56,15 +55,40 @@ export class LocationService {
           if (uid != '') {
             let lData: Location[] = [];
             for (const loc of locations) {
-              let savedLocation: SaveLocation = await this.saveLocationModel.findOne({ location: loc._id.toString(), uid: uid });
-              loc.saved = (savedLocation != null)
-              lData.push(loc)
+              try {
+                let savedLocation: SaveLocation = await this.saveLocationModel.findOne({ location: loc._id.toString(), uid: uid });
+                loc.saved = (savedLocation != null)
+
+                lData.push(loc)
+              } catch (error) {
+                this.logger.error(error.stack)
+              }
             }
+            console.log(lData)
             return shuffleArray(lData)
           } else {
             return shuffleArray(locations)
           }
         })
+
+    } catch (error) {
+      this.logger.error(error.stack)
+      throw new HttpException(error.stack, HttpStatus.EXPECTATION_FAILED);
+    }
+  }
+
+  async findAllUploaded(req: Http2ServerRequest, query: MongoQueryModel) {
+    try {
+
+      let uid: any = await this.userService.getUserObjectId(req) ?? '';
+
+      return await this.locationModel
+        .find({ insertUid: uid })
+        .populate('locationCategory')
+        .populate('insertUid')
+        .limit(query.limit)
+        .skip(query.skip)
+        .sort(query.sort)
 
     } catch (error) {
       this.logger.error(error.message)

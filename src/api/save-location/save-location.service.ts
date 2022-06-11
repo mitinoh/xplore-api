@@ -29,10 +29,12 @@ export class SaveLocationService {
     }
   }
 
-  async findAll(query: MongoQueryModel) {
+  async findAll(req: Http2ServerRequest ,query: MongoQueryModel) {
     try {
+
+      let uid: any = await this.userService.getUserObjectId(req) ?? '';
       return await this.saveLocationModel
-        .find(query.filter)
+        .find({uid: uid})
         .populate('uid')
         // .populate('location')
         .populate({
@@ -53,6 +55,13 @@ export class SaveLocationService {
         .skip(query.skip)
         .sort(query.sort)
         .select(query.select)
+        .then(async (locations: any[]) => {
+          locations.forEach((loc: any, i: number) => {
+            if (loc["location"] == null)
+              locations.splice(i, 1);
+          })
+          return locations
+        })
     } catch (error) {
       this.logger.error(error)
       throw new HttpException(error.message, HttpStatus.EXPECTATION_FAILED);

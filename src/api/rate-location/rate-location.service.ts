@@ -30,10 +30,12 @@ export class RateLocationService {
     }
   }
 
-  async findAll(query: MongoQueryModel) {
+  async findAll(req: Http2ServerRequest ,query: MongoQueryModel) {
     try {
+
+      let uid: any = await this.userService.getUserObjectId(req) ?? '';
       return await this.rateLocationModel
-        .find(query.filter)
+        .find({uid: uid})
         .populate('uid')
         .populate('location')
         .limit(query.limit)

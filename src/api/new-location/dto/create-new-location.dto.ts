@@ -30,7 +30,6 @@ export class CreateNewLocationDto {
 
 
     @ApiProperty()
-    @IsBase64()
     base64: string;
 
     cdate: number = Date.now();

@@ -68,7 +68,7 @@ export class UserService {
       delete updateUserDto.base64
 
 
-      this.imageService.create(uid, {base64: base64, entity: "user"})
+      this.imageService.create(uid, { base64: base64, entity: "user" })
       return await this.userModel.findOneAndUpdate({ _id: uid },
         updateUserDto, {
         new: false
@@ -101,8 +101,10 @@ export class UserService {
       }
       return undefined
     } catch (error) {
-      this.logger.error(error)
+      this.logger.error(error.message)
+      return "";
       throw new HttpException(error.message, HttpStatus.EXPECTATION_FAILED);
+
     }
 
   }

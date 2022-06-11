@@ -42,10 +42,12 @@ export class NewLocationService {
     }
   }
 
-  async findAll(query: MongoQueryModel) {
+  async findAll(req: Http2ServerRequest, query: MongoQueryModel) {
     try {
+
+      let uid: any = await this.userService.getUserObjectId(req) ?? '';
       return await this.newLocationModel
-        .find(query.filter)
+        .find({uid: uid})
         .populate('locationCategory')
         .populate('uid')
         .limit(query.limit)

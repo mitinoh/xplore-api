@@ -20,8 +20,8 @@ export class SaveLocationController {
   @ApiQuery({ name: 'uid', type: 'objecId', required: false })
   @ApiQuery({ name: 'location', type: 'objectId', required: false })
   @Get()
-  findAll(@MongoQuery() query: MongoQueryModel) {
-    return this.saveLocationService.findAll(query);
+  findAll(@Req() req: Http2ServerRequest, @MongoQuery() query: MongoQueryModel) {
+    return this.saveLocationService.findAll(req, query);
   }
 
   @Get(':id')

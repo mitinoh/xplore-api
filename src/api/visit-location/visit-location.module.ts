@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
-import { VisitLocationService } from './visit-location.service';
-import { VisitLocationController } from './visit-location.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { UserService } from '../user/user.service';
+import { ImageService } from '../image/image.service';
 import { User, UserSchema } from '../user/entities/user.entity';
+import { UserService } from '../user/user.service';
 import { VisitLocation, VisitLocationSchema } from './entities/visit-location.entity';
+import { VisitLocationController } from './visit-location.controller';
+import { VisitLocationService } from './visit-location.service';
 
 @Module({
   imports: [
@@ -12,10 +13,10 @@ import { VisitLocation, VisitLocationSchema } from './entities/visit-location.en
     MongooseModule.forFeature([
       { name: VisitLocation.name, schema: VisitLocationSchema },
       { name: User.name, schema: UserSchema },
-      
+
     ]),
   ],
   controllers: [VisitLocationController],
-  providers: [VisitLocationService, UserService]
+  providers: [VisitLocationService, UserService, ImageService]
 })
-export class VisitLocationModule {}
+export class VisitLocationModule { }

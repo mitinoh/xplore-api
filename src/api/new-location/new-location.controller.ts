@@ -25,8 +25,8 @@ export class NewLocationController {
   @ApiQuery({ name: 'locationCategory', type: 'objectId', required: false })
   @ApiQuery({ name: 'cdate', type: 'Date', required: false })
   @Get()
-  findAll(@MongoQuery() query: MongoQueryModel) {
-    return this.newLocationService.findAll(query);
+  findAll(@Req() req: Http2ServerRequest, @MongoQuery() query: MongoQueryModel) {
+    return this.newLocationService.findAll(req, query);
   }
 
   @Get(':id')

@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
-import { PlanTripService } from './plan-trip.service';
-import { PlanTripController } from './plan-trip.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { PlannedLocation } from './entities/planned-location.interface';
-import { PlanTrip, PlanTripSchema } from './entities/plan-trip.entity';
+import { ImageService } from '../image/image.service';
 import { User, UserSchema } from '../user/entities/user.entity';
 import { UserService } from '../user/user.service';
+import { PlanTrip, PlanTripSchema } from './entities/plan-trip.entity';
+import { PlanTripController } from './plan-trip.controller';
+import { PlanTripService } from './plan-trip.service';
 
 @Module({
   imports: [
@@ -15,6 +15,6 @@ import { UserService } from '../user/user.service';
     ]),
   ],
   controllers: [PlanTripController],
-  providers: [PlanTripService, UserService]
+  providers: [PlanTripService, UserService, ImageService]
 })
-export class PlanTripModule {}
+export class PlanTripModule { }

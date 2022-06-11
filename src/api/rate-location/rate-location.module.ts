@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
-import { RateLocationService } from './rate-location.service';
-import { RateLocationController } from './rate-location.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { RateLocation, RateLocationSchema } from './entities/rate-location.entity';
-import { UserService } from '../user/user.service';
+import { ImageService } from '../image/image.service';
 import { User, UserSchema } from '../user/entities/user.entity';
+import { UserService } from '../user/user.service';
+import { RateLocation, RateLocationSchema } from './entities/rate-location.entity';
+import { RateLocationController } from './rate-location.controller';
+import { RateLocationService } from './rate-location.service';
 
 @Module({
   imports: [
@@ -12,10 +13,10 @@ import { User, UserSchema } from '../user/entities/user.entity';
     MongooseModule.forFeature([
       { name: RateLocation.name, schema: RateLocationSchema },
       { name: User.name, schema: UserSchema },
-      
+
     ]),
   ],
   controllers: [RateLocationController],
-  providers: [RateLocationService, UserService]
+  providers: [RateLocationService, UserService, ImageService]
 })
-export class RateLocationModule {}
+export class RateLocationModule { }

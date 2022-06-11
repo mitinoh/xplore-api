@@ -1,15 +1,16 @@
 import { Module } from '@nestjs/common';
-import { LocationService } from './location.service';
-import { LocationController } from './location.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { LocationSchema, Location } from './entities/location.entity';
 import { AppService } from 'src/app.service';
-import { LocationCategory, LocationCategorySchema } from '../location-category/entities/location-category.entity';
-import { SaveLocationModule } from '../save-location/save-location.module';
+import { ImageService } from '../image/image.service';
+import { LocationCategory } from '../location-category/entities/location-category.entity';
 import { SaveLocation, SaveLocationSchema } from '../save-location/entities/save-location.entity';
+import { SaveLocationModule } from '../save-location/save-location.module';
 import { User, UserSchema } from '../user/entities/user.entity';
 import { UserModule } from '../user/user.module';
 import { UserService } from '../user/user.service';
+import { Location, LocationSchema } from './entities/location.entity';
+import { LocationController } from './location.controller';
+import { LocationService } from './location.service';
 @Module({
   imports: [
     LocationCategory,
@@ -22,6 +23,6 @@ import { UserService } from '../user/user.service';
     ]),
   ],
   controllers: [LocationController],
-  providers: [LocationService, AppService, UserService],
+  providers: [LocationService, AppService, UserService, ImageService],
 })
-export class LocationModule {}
+export class LocationModule { }
