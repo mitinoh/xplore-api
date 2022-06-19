@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UsePipes, ValidationPipe, HttpException, HttpStatus, Logger, Inject } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UsePipes, ValidationPipe, HttpException, HttpStatus, Logger, Inject, Query } from '@nestjs/common';
 import { VisitLocationService } from './visit-location.service';
 import { CreateVisitLocationDto } from './dto/create-visit-location.dto';
 import { UpdateVisitLocationDto } from './dto/update-visit-location.dto';
@@ -24,7 +24,7 @@ export class VisitLocationController {
   @ApiQuery({ name: 'uid', type: 'objectId', required: false })
   @ApiQuery({ name: 'location', type: 'objectId', required: false })
   @Get()
-  findAll(@MongoQuery() query: MongoQueryModel) {
+  findAll(@Query() query: any) {
     return this.visitLocationService.findAll(query);
   }
 

@@ -12,7 +12,7 @@ export class User {
     id: MongooseSchema.Types.ObjectId
 
     @ApiProperty({ type: String })
-    @Prop({ required: true })
+    @Prop({ required: true, unique: true })
     name: string
 
     @ApiProperty({ type: String })

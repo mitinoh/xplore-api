@@ -1,12 +1,11 @@
 import { HttpException, HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Http2ServerRequest } from 'http2';
-import mongoose from 'mongoose';
+import mongoose, { mquery, PipelineStage } from 'mongoose';
 
 import { Model } from "mongoose";
 import { MongoQueryModel } from 'nest-mongo-query-parser';
 import { AuthService } from 'src/auth/auth.service';
-import shuffleArray from 'src/shared/utils';
 import { SaveLocation, SaveLocationDocument } from '../save-location/entities/save-location.entity';
 import { UserService } from '../user/user.service';
 import { CreateLocationDto } from './dto/create-location.dto';
@@ -14,6 +13,10 @@ import { UpdateLocationDto } from './dto/update-location.dto';
 import { Location, LocationDocument } from './entities/location.entity';
 
 import { ObjectId } from 'bson';
+
+import { MongooseQueryParser } from 'mongoose-query-parser';
+import { CoordinateFilter } from './entities/coordinate.interface';
+
 @Injectable()
 export class LocationService {
 
@@ -23,8 +26,7 @@ export class LocationService {
     @InjectModel(SaveLocation.name) private saveLocationModel: Model<SaveLocationDocument>,
     @Inject('winston') private readonly logger: Logger,
     private authService: AuthService,
-    private readonly userService: UserService,) { }
-
+    private readonly userService: UserService) { }
 
   async create(req: Http2ServerRequest, createLocationDto: CreateLocationDto) {
     try {
@@ -39,37 +41,49 @@ export class LocationService {
     }
   }
 
-  async findAll(req: Http2ServerRequest, query: MongoQueryModel) {
+  mongooseParser = new MongooseQueryParser()
+  async findAll(req: Http2ServerRequest, query: any) {
     try {
-      return await this.locationModel
 
-        .find(query.filter)
+    let mQuery = this.mongooseParser.parse(query);
+
+    let coordinateFilter = new CoordinateFilter(mQuery.filter.latitude, mQuery.filter.longitude, mQuery.filter.distance)
+      delete mQuery.filter.latitude;
+      delete mQuery.filter.longitude;
+      delete mQuery.filter.distance;
+    
+      if(coordinateFilter.latitude && coordinateFilter.longitude && coordinateFilter.distance)
+        mQuery.filter.geometry = {
+          $near:
+          {
+            $geometry: {
+              type: "Point",
+              coordinates: [
+                parseFloat(coordinateFilter.latitude.toString()),
+                parseFloat(coordinateFilter.longitude.toString())
+              ]
+            },
+            $maxDistance: parseFloat(coordinateFilter.distance.toString())
+          }
+        }
+
+
+      //let uid = "62a4b356a999f69566175df6"
+      let uid: any = await this.userService.getUserObjectId(req) ?? '';
+      
+      return await this.locationModel
+        .find(mQuery.filter)
         .populate('locationCategory')
         .populate('insertUid')
+        .populate({
+          path: "saved",
+          match: { uid: uid },
+          select: 'cdate'
+        })
         .limit(query.limit)
         .skip(query.skip)
         .sort(query.sort)
-        .select(query.select).then(async (locations: any[]) => {
-          let uid: any = await this.userService.getUserObjectId(req) ?? '';
-          // FIXME: verificare se req contiene token con uid
-          if (uid != '') {
-            let lData: Location[] = [];
-            for (const loc of locations) {
-              try {
-                let savedLocation: SaveLocation = await this.saveLocationModel.findOne({ location: loc._id.toString(), uid: uid });
-                loc.saved = (savedLocation != null)
 
-                lData.push(loc)
-              } catch (error) {
-                this.logger.error(error.stack)
-              }
-            }
-            console.log(lData)
-            return shuffleArray(lData)
-          } else {
-            return shuffleArray(locations)
-          }
-        })
 
     } catch (error) {
       this.logger.error(error.stack)
@@ -77,7 +91,7 @@ export class LocationService {
     }
   }
 
-  async findAllUploaded(req: Http2ServerRequest, query: MongoQueryModel) {
+  async findAllUploaded(req: Http2ServerRequest, query: any) {
     try {
 
       let uid: any = await this.userService.getUserObjectId(req) ?? '';
@@ -86,6 +100,11 @@ export class LocationService {
         .find({ insertUid: uid })
         .populate('locationCategory')
         .populate('insertUid')
+        .populate({
+          path: "saved",
+          match: { uid: uid },
+          select: 'cdate'
+        })
         .limit(query.limit)
         .skip(query.skip)
         .sort(query.sort)
@@ -129,5 +148,115 @@ export class LocationService {
       this.logger.error(error)
       throw new HttpException(error.message, HttpStatus.EXPECTATION_FAILED);
     }
+  }
+
+  aggregation(userObjId: string, query: MongoQueryModel): PipelineStage[] {
+
+    let userFilter: any;
+    if (userObjId && userObjId != "") {
+      userFilter = {
+        '$eq': [
+          '$uid', new ObjectId(userObjId)
+        ]
+      }
+    }
+    return [
+      {
+        '$lookup': {
+          'from': 'savelocations',
+          'let': {
+            'locationId': '$_id'
+          },
+
+          'pipeline': [
+            {
+              '$match': {
+                '$expr': {
+                  '$and': [
+                    userFilter
+                    , {
+                      '$eq': [
+                        '$location', '$$locationId'
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          ],
+          'as': 'saved'
+        }
+      }, {
+        '$lookup': {
+          'from': 'users',
+          'localField': 'insertUid',
+          'foreignField': '_id',
+          'as': 'insertUid'
+        }
+      }, {
+        '$unwind': {
+          'path': '$locationCategory',
+          'preserveNullAndEmptyArrays': true
+        }
+      }, {
+        '$lookup': {
+          'from': 'locationcategories',
+          'localField': 'locationCategory',
+          'foreignField': '_id',
+          'as': 'locationCategory'
+        }
+      }, {
+        '$group': {
+          '_id': '$_id',
+          'name': {
+            '$first': '$name'
+          },
+          'desc': {
+            '$first': '$desc'
+          },
+          'indication': {
+            '$first': '$indication'
+          },
+          'coordinate': {
+            '$first': '$coordinate'
+          },
+          'periodAvaiable': {
+            '$first': '$periodAvaiable'
+          },
+          'dayAvaiable': {
+            '$first': '$dayAvaiable'
+          },
+          'cdate': {
+            '$first': '$cdate'
+          },
+          'locationCategory': {
+            '$push': {
+              '$arrayElemAt': [
+                '$locationCategory', 0
+              ]
+            }
+          },
+          'saved': {
+            '$first': {
+              '$cond': {
+                'if': {
+                  '$gt': [
+                    {
+                      '$size': '$saved'
+                    }, 0
+                  ]
+                },
+                'then': true,
+                'else': false
+              }
+            }
+          }
+        }
+      },
+      {
+        $match: query.filter
+
+      }
+    ]
   }
 }

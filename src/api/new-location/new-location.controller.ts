@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Req, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Http2ServerRequest } from 'http2';
 import { MongoQuery, MongoQueryModel } from 'nest-mongo-query-parser';
@@ -25,7 +25,7 @@ export class NewLocationController {
   @ApiQuery({ name: 'locationCategory', type: 'objectId', required: false })
   @ApiQuery({ name: 'cdate', type: 'Date', required: false })
   @Get()
-  findAll(@Req() req: Http2ServerRequest, @MongoQuery() query: MongoQueryModel) {
+  findAll(@Req() req: Http2ServerRequest, @Query() query: any) {
     return this.newLocationService.findAll(req, query);
   }
 

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UsePipes, ValidationPipe, Query } from '@nestjs/common';
 import { SaveLocationService } from './save-location.service';
 import { CreateSaveLocationDto } from './dto/create-save-location.dto';
 import { UpdateSaveLocationDto } from './dto/update-save-location.dto';
@@ -20,7 +20,7 @@ export class SaveLocationController {
   @ApiQuery({ name: 'uid', type: 'objecId', required: false })
   @ApiQuery({ name: 'location', type: 'objectId', required: false })
   @Get()
-  findAll(@Req() req: Http2ServerRequest, @MongoQuery() query: MongoQueryModel) {
+  findAll(@Req() req: Http2ServerRequest, @Query() query: any) {
     return this.saveLocationService.findAll(req, query);
   }
 

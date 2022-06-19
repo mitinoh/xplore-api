@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Inject, Injectable, Logger } from '@nestjs/c
 import { InjectModel } from '@nestjs/mongoose';
 import { Http2ServerRequest } from 'http2';
 import mongoose, { Model } from 'mongoose';
+import { MongooseQueryParser } from 'mongoose-query-parser';
 import { MongoQueryModel } from 'nest-mongo-query-parser';
 import { AuthService } from 'src/auth/auth.service';
 import { ImageService } from '../image/image.service';
@@ -17,6 +18,7 @@ export class UserService {
     @Inject('winston') private readonly logger: Logger,
     private authService: AuthService,
     private imageService: ImageService) { }
+  mongooseParser = new MongooseQueryParser()
 
   async create(req: Http2ServerRequest, createUserDto: CreateUserDto) {
     try {
@@ -29,14 +31,15 @@ export class UserService {
     }
   }
 
-  async findAll(query: MongoQueryModel) {
+  async findAll(query: any) {
     try {
+      let mQuery = this.mongooseParser.parse(query);
       return await this.userModel
-        .find(query.filter)
-        .limit(query.limit)
-        .skip(query.skip)
-        .sort(query.sort)
-        .select(query.select)
+        .find(mQuery.filter)
+        .limit(mQuery.limit)
+        .skip(mQuery.skip)
+        .sort(mQuery.sort)
+        .select(mQuery.select)
     } catch (error) {
       this.logger.error(error)
       throw new HttpException(error.message, HttpStatus.EXPECTATION_FAILED);
@@ -67,8 +70,8 @@ export class UserService {
       let base64: string = updateUserDto.base64;
       delete updateUserDto.base64
 
-
-      this.imageService.create(uid, { base64: base64, entity: "user" })
+      if (base64)
+        this.imageService.create(uid, { base64: base64, entity: "user" })
       return await this.userModel.findOneAndUpdate({ _id: uid },
         updateUserDto, {
         new: false

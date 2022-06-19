@@ -9,6 +9,7 @@ import { AuthService } from 'src/auth/auth.service';
 import { Http2ServerRequest } from 'http2';
 import { MongoQueryModel } from 'nest-mongo-query-parser';
 import { UserService } from '../user/user.service';
+import { MongooseQueryParser } from 'mongoose-query-parser';
 
 @Injectable()
 export class RateLocationService {
@@ -18,6 +19,7 @@ export class RateLocationService {
     @Inject('winston')  private readonly logger: Logger,
     private authService: AuthService, 
     private readonly userService: UserService) { }
+    mongooseParser = new MongooseQueryParser()
 
   async create(req: Http2ServerRequest, createRateLocationDto: CreateRateLocationDto) {
     try {
@@ -30,18 +32,18 @@ export class RateLocationService {
     }
   }
 
-  async findAll(req: Http2ServerRequest ,query: MongoQueryModel) {
+  async findAll(req: Http2ServerRequest, query: any) {
     try {
-
+      let mQuery = this.mongooseParser.parse(query)
       let uid: any = await this.userService.getUserObjectId(req) ?? '';
       return await this.rateLocationModel
         .find({uid: uid})
         .populate('uid')
         .populate('location')
-        .limit(query.limit)
-        .skip(query.skip)
-        .sort(query.sort)
-        .select(query.select)
+        .limit(mQuery.limit)
+        .skip(mQuery.skip)
+        .sort(mQuery.sort)
+        .select(mQuery.select)
     } catch (error) {
       this.logger.error(error)
       throw new HttpException(error.message, HttpStatus.EXPECTATION_FAILED);

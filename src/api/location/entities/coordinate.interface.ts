@@ -1,23 +1,11 @@
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { ApiProperty } from "@nestjs/swagger";
-import { IsInt, IsLatitude, IsLongitude } from "class-validator";
+export class CoordinateFilter {
+    latitude: number = 0;
+    longitude: number = 0
+    distance: number = 0
 
-export class Coordinate {
-    @ApiProperty({type: Number})
-    @IsLatitude() // 6 cifre richieste
-    @Prop({type: Number})
-    lat: number
-
-    @ApiProperty({type: Number})
-    @IsLongitude()
-    @Prop({type: Number})
-    lng: number
-
-    @ApiProperty({type: Number})
-    @IsLongitude()
-    @Prop({type: Number})
-    alt: number
+    constructor(lat: number, lng: number, dis: number) {
+        this.latitude = lat;
+        this.longitude = lng;
+        this.distance = dis
+    }
 }
-
-export type CoordinateDocument = Coordinate & Document;
-export const CoordinateSchema = SchemaFactory.createForClass(Coordinate);

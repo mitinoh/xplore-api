@@ -5,14 +5,13 @@ import { ValidateNested } from "class-validator";
 import { Document, Schema as MongooseSchema } from "mongoose";
 import { LocationCategory } from "src/api/location-category/entities/location-category.entity";
 import { User } from "src/api/user/entities/user.entity";
-import { Coordinate } from "./coordinate.interface";
 import { DayAvaiable } from "./dayavaiable.interface";
+import { Geometry } from "./geometry.interface";
 
 
-@Schema({ /* timestamps: true , collection: "EVENTS_COLLECTION" */ })
+@Schema({ /* timestamps: true , collection: "EVENTS_COLLECTION" */  toJSON: { virtuals: true, getters: true }, toObject: { virtuals: true, getters: true } })
+
 export class Location {
-
-
     /*
     @Prop(() => MongooseSchema.Types.ObjectId)
     mdbId: MongooseSchema.Types.ObjectId
@@ -33,10 +32,11 @@ export class Location {
     @ApiProperty({ type: String })
     @Prop()
     indication: string
-
+/*
     @ApiProperty({ type: Coordinate })
     @Prop({ required: true, type: Coordinate })
     coordinate: Coordinate
+    */
 
     @ApiProperty({ type: Number })
     @Prop()
@@ -54,18 +54,40 @@ export class Location {
     locationCategory: LocationCategory[]
 
 
+    /*
     @ApiProperty({ type: Boolean })
     @Prop()
     saved: boolean
+    */
 
     @ApiProperty({ type: User })
     @Prop({ type: MongooseSchema.Types.ObjectId, ref: User.name })
     @Type(() => User)
     insertUid: User
 
+    @ApiProperty({ type: Geometry })
+    @Prop({ type: Geometry , index: "2dsphere"})
+    @Type(() => Geometry)
+    geometry: Geometry
+
+
     @Prop({ type: Date })
     cdate: Date
 }
 
+
+
 export type LocationDocument = Location & Document;
-export const LocationSchema = SchemaFactory.createForClass(Location);
+const LocationSchema = SchemaFactory.createForClass(Location);
+
+
+
+LocationSchema.virtual('saved', {
+    ref: 'SaveLocation',                // fetch from User model
+    localField: '_id',
+    foreignField: 'location'
+})
+
+LocationSchema.index({ geometry: '2dsphere' });
+
+export { LocationSchema };

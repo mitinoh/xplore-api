@@ -7,6 +7,7 @@ import { Model } from "mongoose";
 import { MongoQueryModel } from 'nest-mongo-query-parser';
 import * as mongoose from 'mongoose'
 import { Http2ServerRequest } from 'http2';
+import { MongooseQueryParser } from 'mongoose-query-parser';
 
 @Injectable()
 export class LocationCategoryService {
@@ -14,6 +15,7 @@ export class LocationCategoryService {
   constructor(
     @InjectModel(LocationCategory.name) private locationCategoryModel: Model<LocationCategoryDocument>,
     @Inject('winston')  private readonly logger: Logger) { }
+  mongooseParser = new MongooseQueryParser()
 
   
   async create(req: Http2ServerRequest, createLocationCategoryDto: CreateLocationCategoryDto) {
@@ -26,14 +28,16 @@ export class LocationCategoryService {
     }
   }
 
-  async findAll(query: MongoQueryModel) {
+  async findAll(query: any) {
     try {
+
+      let mQuery = this.mongooseParser.parse(query);
       return await this.locationCategoryModel
-      .find(query.filter)
-      .limit(query.limit)
-      .skip(query.skip)
-      .sort(query.sort)
-      .select(query.select)
+      .find(mQuery.filter)
+      .limit(mQuery.limit)
+      .skip(mQuery.skip)
+      .sort(mQuery.sort)
+      .select(mQuery.select)
     } catch (error) {
       this.logger.error(error)
       throw new HttpException(error.message, HttpStatus.EXPECTATION_FAILED);

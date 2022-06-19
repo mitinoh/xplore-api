@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UsePipes, ValidationPipe, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UsePipes, ValidationPipe, Put, Query } from '@nestjs/common';
 import { LocationCategoryService } from './location-category.service';
 import { CreateLocationCategoryDto } from './dto/create-location-category.dto';
 import { UpdateLocationCategoryDto } from './dto/update-location-category.dto';
@@ -20,7 +20,7 @@ export class LocationCategoryController {
 
   @ApiQuery({ name: 'name', type: 'string', required: false })
   @Get()
-  findAll( @MongoQuery() query: MongoQueryModel) {
+  findAll( @Query() query: any) {
     return this.locationCategoryService.findAll(query);
   }
 

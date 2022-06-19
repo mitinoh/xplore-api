@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Inject, Injectable, Logger } from '@nestjs/c
 import { InjectModel } from '@nestjs/mongoose';
 import { Http2ServerRequest } from 'http2';
 import mongoose, { Model, Schema as MongooseSchema } from 'mongoose';
+import { MongooseQueryParser } from 'mongoose-query-parser';
 import { MongoQueryModel } from 'nest-mongo-query-parser';
 import { AuthService } from 'src/auth/auth.service';
 import { ImageService } from '../image/image.service';
@@ -20,6 +21,7 @@ export class NewLocationService {
     private readonly userService: UserService,
     private readonly imageService: ImageService
   ) { }
+  mongooseParser = new MongooseQueryParser()
 
   async create(req: Http2ServerRequest, createNewLocationDto: CreateNewLocationDto) {
 
@@ -42,12 +44,12 @@ export class NewLocationService {
     }
   }
 
-  async findAll(req: Http2ServerRequest, query: MongoQueryModel) {
+  async findAll(req: Http2ServerRequest, query: any) {
     try {
-
+      let mQuery = this.mongooseParser.parse(query)
       let uid: any = await this.userService.getUserObjectId(req) ?? '';
       return await this.newLocationModel
-        .find({uid: uid})
+        .find(mQuery)
         .populate('locationCategory')
         .populate('uid')
         .limit(query.limit)

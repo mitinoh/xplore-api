@@ -2,7 +2,8 @@ import { HttpException, HttpStatus, Inject, Injectable, Logger } from '@nestjs/c
 import { InjectModel } from '@nestjs/mongoose';
 import { Http2ServerRequest } from 'http2';
 import mongoose, { Model } from 'mongoose';
-import { MongoQueryModel } from 'nest-mongo-query-parser';
+import { MongooseQueryParser } from 'mongoose-query-parser';
+import { MongoQueryModel, MongoQueryParser } from 'nest-mongo-query-parser';
 import { AuthService } from 'src/auth/auth.service';
 import { UserService } from '../user/user.service';
 import { CreateSaveLocationDto } from './dto/create-save-location.dto';
@@ -17,6 +18,7 @@ export class SaveLocationService {
     @Inject('winston') private readonly logger: Logger,
     private authService: AuthService,
     private readonly userService: UserService) { }
+    mongooseParser = new MongooseQueryParser()
 
   async create(req: Http2ServerRequest, createSaveLocationDto: CreateSaveLocationDto) {
     try {
@@ -31,12 +33,11 @@ export class SaveLocationService {
 
   async findAll(req: Http2ServerRequest ,query: MongoQueryModel) {
     try {
-
+      let mQuery = this.mongooseParser.parse(query)
       let uid: any = await this.userService.getUserObjectId(req) ?? '';
       return await this.saveLocationModel
         .find({uid: uid})
         .populate('uid')
-        // .populate('location')
         .populate({
           path: 'location',
           populate: {
@@ -51,10 +52,10 @@ export class SaveLocationService {
             model: 'User'
           }
         })
-        .limit(query.limit)
-        .skip(query.skip)
-        .sort(query.sort)
-        .select(query.select)
+        .limit(mQuery.limit)
+        .skip(mQuery.skip)
+        .sort(mQuery.sort)
+        .select(mQuery.select)
         .then(async (locations: any[]) => {
           locations.forEach((loc: any, i: number) => {
             if (loc["location"] == null)

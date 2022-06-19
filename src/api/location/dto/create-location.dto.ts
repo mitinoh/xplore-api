@@ -1,10 +1,11 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import { IsArray, IsEmpty, IsIn, IsInt, IsMongoId, IsNotEmpty, IsNotEmptyObject, IsNumber, IsObject, IsString, NotEquals, notEquals, Validate, ValidateIf, ValidateNested } from "class-validator";
-import { Coordinate } from "../entities/coordinate.interface";
 import { DayAvaiable } from "../entities/dayavaiable.interface";
 import { CoordinateRule, CoordinateValidator } from "../validator/location.validator";
 import { Document, Schema as MongooseSchema, Types } from "mongoose";
+import { Geometry} from "../entities/geometry.interface";
+import { Prop} from "@nestjs/mongoose";
 
 export class CreateLocationDto {
 
@@ -21,10 +22,6 @@ export class CreateLocationDto {
     @IsString()
     indication: string = "";
 
-    @ApiProperty({type: Coordinate})
-    @IsNotEmpty()
-    coordinate: Coordinate;
-
     @ApiProperty({type: [DayAvaiable]})
     @ValidateNested({each: true})
     dayAvaiable: DayAvaiable[] 
@@ -39,6 +36,12 @@ export class CreateLocationDto {
     @IsMongoId({each: true})
     locationCategory: MongooseSchema.Types.ObjectId[] = []
 
+    
+    @ApiProperty({ type: Geometry })
+    @Prop({ type: Geometry , index: "2dsphere"})
+    @Type(() => Geometry)
+    geometry: Geometry
+    
 
     cdate: number = Date.now();
 

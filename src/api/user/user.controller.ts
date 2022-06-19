@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, ValidationPipe, UsePipes, HttpException, HttpStatus, Inject, Logger } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, ValidationPipe, UsePipes, HttpException, HttpStatus, Inject, Logger, Query } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -20,7 +20,7 @@ export class UserController {
   }
 
   @Get()
-  findAll(@MongoQuery() query: MongoQueryModel) {
+  findAll(@Query() query: any) {
     return this.userService.findAll(query);
   }
 

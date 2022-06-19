@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UsePipes, ValidationPipe, Query } from '@nestjs/common';
 import { PlanTripService } from './plan-trip.service';
 import { CreatePlanTripDto } from './dto/create-plan-trip.dto';
 import { UpdatePlanTripDto } from './dto/update-plan-trip.dto';
@@ -24,7 +24,7 @@ export class PlanTripController {
   @ApiQuery({ name: 'uid', type: 'objectId', required: false })
   @ApiQuery({ name: 'cdate', type: 'date', required: false })
   @Get()
-  findAll(@Req() req:Http2ServerRequest, @MongoQuery() query: MongoQueryModel) {
+  findAll(@Req() req: Http2ServerRequest, @Query() query: any) {
     return this.planTripService.findAll(req, query);
   }
 

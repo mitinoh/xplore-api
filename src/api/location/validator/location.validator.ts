@@ -6,12 +6,11 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
-import { Coordinate } from '../entities/coordinate.interface';
 
 @ValidatorConstraint({ name: 'CoordinateValidator', async: true })
 @Injectable()
 export class CoordinateValidator implements ValidatorConstraintInterface {
-  async validate(coordinate: Coordinate) {
+  async validate(coordinate: any) {
     if (coordinate && coordinate.lat != undefined && coordinate.lng != undefined && coordinate.alt != undefined) {
       return true;
     }

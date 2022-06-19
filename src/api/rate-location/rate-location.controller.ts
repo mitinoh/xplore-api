@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UsePipes, ValidationPipe, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UsePipes, ValidationPipe, Put, Query } from '@nestjs/common';
 import { RateLocationService } from './rate-location.service';
 import { CreateRateLocationDto } from './dto/create-rate-location.dto';
 import { UpdateRateLocationDto } from './dto/update-rate-location.dto';
@@ -21,7 +21,7 @@ export class RateLocationController {
   @ApiQuery({ name: 'uid', type: 'objectId', required: false })
   @ApiQuery({ name: 'location', type: 'objectId', required: false })
   @Get()
-  findAll(@Req() req: Http2ServerRequest, @MongoQuery() query: MongoQueryModel) {
+  findAll(@Req() req: Http2ServerRequest, @Query() query: any) {
     return this.rateLocationService.findAll(req, query);
   }
 

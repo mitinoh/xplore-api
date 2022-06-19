@@ -1,9 +1,10 @@
-import { Body, Controller, Get, Inject, Logger, Param, Patch, Post, Req, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Logger, Param, Patch, Post, Query, Req, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Http2ServerRequest } from 'http2';
 import { MongoQuery, MongoQueryModel } from 'nest-mongo-query-parser';
 import { CreateLocationDto } from './dto/create-location.dto';
 import { UpdateLocationDto } from './dto/update-location.dto';
+import { CoordinateFilter} from './entities/coordinate.interface';
 import { LocationService } from './location.service';
 
 @ApiTags('location')
@@ -35,17 +36,17 @@ export class LocationController {
   @ApiQuery({ name: 'cdate', type: 'date', required: false })
 
   @Get()
-  findAll(@Req() req: Http2ServerRequest, @MongoQuery() query: MongoQueryModel) {
+  findAll(
+    @Req() req: Http2ServerRequest, 
+    @Query() query: any) {
     return this.locationService.findAll(req, query);
   }
 
   @Get('/:operation')
-  find(@Req() req: Http2ServerRequest, @MongoQuery() query: MongoQueryModel, @Param("operation") operation: string) {
-    console.log(operation)
+  find(@Req() req: Http2ServerRequest, @Query() query: any, @Param("operation") operation: string) {
     if (operation && operation.toLowerCase() == "uploaded")
       return this.locationService.findAllUploaded(req, query);
   }
-
 
 
   @Get(':id')

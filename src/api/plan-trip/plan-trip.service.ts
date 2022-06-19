@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { ObjectId } from 'bson';
 import { Http2ServerRequest } from 'http2';
 import mongoose, { Model, PipelineStage } from 'mongoose';
+import { MongooseQueryParser} from 'mongoose-query-parser';
 import { MongoQueryModel } from 'nest-mongo-query-parser';
 import { AuthService } from 'src/auth/auth.service';
 import { UserService } from '../user/user.service';
@@ -18,6 +19,7 @@ export class PlanTripService {
     @Inject('winston') private readonly logger: Logger,
     private authService: AuthService,
     private readonly userService: UserService) { }
+    mongooseParser = new MongooseQueryParser();
 
   async create(req: Http2ServerRequest, createPlanTripDto: CreatePlanTripDto) {
     try {
@@ -30,10 +32,31 @@ export class PlanTripService {
     }
   }
 
-  async findAll(req: Http2ServerRequest, query: MongoQueryModel) {
+  async findAll(req: Http2ServerRequest, query: any) {
     try {
-      let user: any = await this.userService.getUserObjectId(req)
-      query.filter["uid"] = user._id.toString()
+      
+      let uid: any = await this.userService.getUserObjectId(req) ?? ''; 
+      let mQuery = this.mongooseParser.parse(query)
+      return this.newPlanTripnModel
+        .find(mQuery.filter)
+        .populate({
+           path: 'plannedLocation',
+          populate: {
+            path: 'location', // TODO: togliere fid 
+            model: 'Location'
+          }
+        })
+        .populate("avoidCategory")
+        .populate({
+          path: "uid",
+          match: { uid: uid }
+        })
+        .limit(mQuery.limit)
+        .skip(mQuery.skip)
+        .sort(mQuery.sort)
+        .select(mQuery.select)
+
+
       return await this.newPlanTripnModel
         .aggregate(this.getMongoAggregation(query))
       //  .find(query.filter)
@@ -130,7 +153,6 @@ export class PlanTripService {
 
     let limitAggregation: PipelineStage = { '$limit': query.limit ?? 999999999 }
     let skipAggregation: PipelineStage = { '$skip': query.skip ?? 0 }
-
 
     let aggregation: PipelineStage[] = [
 
@@ -264,7 +286,6 @@ export class PlanTripService {
       skipAggregation,
       limitAggregation
     ]
-    console.log(returnDateAggregation);
     return aggregation
   }
 
