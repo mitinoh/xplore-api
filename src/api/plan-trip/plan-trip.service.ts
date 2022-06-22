@@ -35,7 +35,7 @@ export class PlanTripService {
   async findAll(req: Http2ServerRequest, query: any) {
     try {
       
-      let uid: any = await this.userService.getUserObjectId(req) ?? ''; 
+      let uid: any = await this.userService.getUserObjectId(req) ?? undefined; 
       let mQuery = this.mongooseParser.parse(query)
       return this.newPlanTripnModel
         .find(mQuery.filter)

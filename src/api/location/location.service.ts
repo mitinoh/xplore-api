@@ -51,7 +51,12 @@ export class LocationService {
       delete mQuery.filter.latitude;
       delete mQuery.filter.longitude;
       delete mQuery.filter.distance;
-    
+      
+      if(coordinateFilter && coordinateFilter.latitude) {
+        console.log(coordinateFilter.latitude.toString()),
+        console.log(coordinateFilter.longitude.toString())
+      }
+
       if(coordinateFilter.latitude && coordinateFilter.longitude && coordinateFilter.distance)
         mQuery.filter.geometry = {
           $near:
@@ -59,26 +64,27 @@ export class LocationService {
             $geometry: {
               type: "Point",
               coordinates: [
-                parseFloat(coordinateFilter.latitude.toString()),
-                parseFloat(coordinateFilter.longitude.toString())
+                parseFloat(coordinateFilter.longitude.toString()),
+                parseFloat(coordinateFilter.latitude.toString())
               ]
             },
             $maxDistance: parseFloat(coordinateFilter.distance.toString())
           }
         }
 
-
       //let uid = "62a4b356a999f69566175df6"
-      let uid: any = await this.userService.getUserObjectId(req) ?? '';
+      let uid: any = await this.userService.getUserObjectId(req) ;
       
       return await this.locationModel
         .find(mQuery.filter)
         .populate('locationCategory')
         .populate('insertUid')
-        .populate({
+        .populate(uid ? {
           path: "saved",
           match: { uid: uid },
           select: 'cdate'
+        }: {
+          path: "saved",
         })
         .limit(query.limit)
         .skip(query.skip)

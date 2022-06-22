@@ -34,16 +34,19 @@ export class SaveLocationService {
   async findAll(req: Http2ServerRequest ,query: MongoQueryModel) {
     try {
       let mQuery = this.mongooseParser.parse(query)
-      let uid: any = await this.userService.getUserObjectId(req) ?? '';
-      return await this.saveLocationModel
+      let uid: any = await this.userService.getUserObjectId(req) ?? undefined;
+     return await this.saveLocationModel
         .find({uid: uid})
         .populate('uid')
         .populate({
           path: 'location',
-          populate: {
+          populate: [{
             path: 'locationCategory',
             model: 'LocationCategory'
-          }
+          }, {
+          path: "saved",
+          match: { uid: uid },
+          }]
         })
         .populate({
           path: 'location',
