@@ -46,17 +46,13 @@ export class LocationService {
     try {
 
     let mQuery = this.mongooseParser.parse(query);
-
+    let searchDoc: string = mQuery.filter.searchDoc ; // chiave per ricercare in tutto il doc
     let coordinateFilter = new CoordinateFilter(mQuery.filter.latitude, mQuery.filter.longitude, mQuery.filter.distance)
-      delete mQuery.filter.latitude;
-      delete mQuery.filter.longitude;
-      delete mQuery.filter.distance;
-      
-      if(coordinateFilter && coordinateFilter.latitude) {
-        console.log(coordinateFilter.latitude.toString()),
-        console.log(coordinateFilter.longitude.toString())
-      }
-
+    delete mQuery.filter.latitude;
+    delete mQuery.filter.longitude;
+    delete mQuery.filter.distance;
+    delete mQuery.filter.searchDoc
+    
       if(coordinateFilter.latitude && coordinateFilter.longitude && coordinateFilter.distance)
         mQuery.filter.geometry = {
           $near:
@@ -72,6 +68,9 @@ export class LocationService {
           }
         }
 
+      if(searchDoc)  {
+        mQuery.filter.$or = [ { name: { $regex: searchDoc, $options: 'i' }},{ desc: { $regex: searchDoc, $options: 'i' }} ]
+      }
       //let uid = "62a4b356a999f69566175df6"
       let uid: any = await this.userService.getUserObjectId(req) ;
       
