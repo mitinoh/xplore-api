@@ -13,7 +13,7 @@ export class User {
 
     @ApiProperty({ type: String })
     @Prop({ required: true, unique: true })
-    name: string
+    username: string
 
     @ApiProperty({ type: String })
     @Prop()
