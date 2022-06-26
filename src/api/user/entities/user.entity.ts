@@ -4,6 +4,8 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Transform } from "class-transformer";
 import { Document, Schema as MongooseSchema } from "mongoose";
 
+var uniqueValidator = require('mongoose-unique-validator');
+
 @Schema()
 export class User {
     @ApiProperty({ type: MongooseSchema.Types.ObjectId })
@@ -28,4 +30,6 @@ export class User {
 }
 
 export type UserDocument = User & Document;
-export const UserSchema = SchemaFactory.createForClass(User);
+const UserSchema = SchemaFactory.createForClass(User);
+UserSchema.plugin(uniqueValidator,{ message: '{PATH} must be unique' });
+export { UserSchema }
