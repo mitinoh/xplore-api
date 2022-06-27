@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Inject, Injectable, Logger } from '@nestjs/c
 import { InjectModel } from '@nestjs/mongoose';
 import { ObjectId } from 'bson';
 import { Http2ServerRequest } from 'http2';
-import mongoose, { Model, PipelineStage } from 'mongoose';
+import mongoose, { Model, mquery, PipelineStage } from 'mongoose';
 import { MongooseQueryParser} from 'mongoose-query-parser';
 import { MongoQueryModel } from 'nest-mongo-query-parser';
 import { AuthService } from 'src/auth/auth.service';
@@ -37,6 +37,7 @@ export class PlanTripService {
       
       let uid: any = await this.userService.getUserObjectId(req) ?? undefined; 
       let mQuery = this.mongooseParser.parse(query)
+      mQuery.filter.uid = uid
       return this.newPlanTripnModel
         .find(mQuery.filter)
         .populate({
