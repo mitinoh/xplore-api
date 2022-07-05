@@ -7,6 +7,7 @@ import {
 import { MongooseModule } from '@nestjs/mongoose';
 import { ServeStaticModule } from '@nestjs/serve-static/dist/serve-static.module';
 import { WinstonModule } from 'nest-winston';
+import { FollowerModule } from './api/follower/follower.module';
 import { ImageModule } from './api/image/image.module';
 import { LocationCategoryModule } from './api/location-category/location-category.module';
 import { LocationModule } from './api/location/location.module';
@@ -34,6 +35,7 @@ require('winston-daily-rotate-file');
     RateLocationModule,
     SaveLocationModule,
     VisitLocationModule,
+    FollowerModule,
     ImageModule,
     /*
     MongooseModule.forRootAsync({

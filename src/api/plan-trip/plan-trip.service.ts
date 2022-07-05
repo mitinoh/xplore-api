@@ -5,6 +5,7 @@ import { Http2ServerRequest } from 'http2';
 import mongoose, { Model, mquery, PipelineStage } from 'mongoose';
 import { MongooseQueryParser} from 'mongoose-query-parser';
 import { MongoQueryModel } from 'nest-mongo-query-parser';
+import { BooleanArraySupportOption } from 'prettier';
 import { AuthService } from 'src/auth/auth.service';
 import { UserService } from '../user/user.service';
 import { CreatePlanTripDto } from './dto/create-plan-trip.dto';

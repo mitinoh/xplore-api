@@ -105,7 +105,7 @@ export class UserService {
       return undefined
     } catch (error) {
       this.logger.error(error.message)
-      return "";
+      return undefined;
       throw new HttpException(error.message, HttpStatus.EXPECTATION_FAILED);
 
     }

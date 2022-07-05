@@ -30,7 +30,6 @@ export class LocationService {
 
   async create(req: Http2ServerRequest, createLocationDto: CreateLocationDto) {
     try {
-
       // REVIEW: ricordarsi di inserire nel db user xplore con questo objId
       let uid: any = await this.userService.getUserObjectId(req) ?? new ObjectId('628fd24dbbe643a8f1816138');
       let newCreateLocation = new this.locationModel({ ...createLocationDto, insertUid: uid });
