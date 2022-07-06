@@ -30,8 +30,8 @@ export class FollowerService {
   }
 
   async getFollowCount(req: Http2ServerRequest) {
-   // let uid: any = await this.userService.getUserObjectId(req);
-   let uid: any = new ObjectId("62b8c9cabb48ee55a97e465c")  
+    let uid: any = await this.userService.getUserObjectId(req);
+   //let uid: any = new ObjectId("62b8c9cabb48ee55a97e465c")  
    
    let follwing: number = await this.followerModel.find({uid: uid}).countDocuments();
    let follwed: number = await this.followerModel.find({followed: uid}).countDocuments();
@@ -43,13 +43,13 @@ export class FollowerService {
 
   async getFollow(req: Http2ServerRequest) {
     let uid: any = await this.userService.getUserObjectId(req);
-   // let uid: any =  new ObjectId("62b8c9cabb48ee55a97e465c")  
 
-    let follwing: any = await this.followerModel.find({uid: uid}).populate("followed");
-    let follwed: any = await this.followerModel.find({followed: uid}).populate("uid");
+    let following: any = await this.followerModel.find({uid: uid}).populate("uid").populate("followed");
+    let followed: any = await this.followerModel.find({followed: uid}).populate("uid").populate("followed");
+   
     return {
-       "following": follwing,
-       "followed": follwed
+       "following": following,
+       "followed": followed
     }
   }
 
