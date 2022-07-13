@@ -29,10 +29,11 @@ export class FollowerService {
     }
   }
 
-  async getFollowCount(req: Http2ServerRequest) {
-    let uid: any = await this.userService.getUserObjectId(req);
+  async getFollowCount(req: Http2ServerRequest, uidd?: string) {
+
+    let uid: any = await this.getUid(req, uidd)
    //let uid: any = new ObjectId("62b8c9cabb48ee55a97e465c")  
-   
+   console.log(uid)
    let follwing: number = await this.followerModel.find({uid: uid}).countDocuments();
    let follwed: number = await this.followerModel.find({followed: uid}).countDocuments();
    return {
@@ -41,8 +42,8 @@ export class FollowerService {
    }
  }
 
-  async getFollow(req: Http2ServerRequest) {
-    let uid: any = await this.userService.getUserObjectId(req);
+  async getFollow(req: Http2ServerRequest, uidd?: string) {
+    let uid: any = await this.getUid(req, uidd)
 
     let following: any = await this.followerModel.find({uid: uid}).populate("uid").populate("followed");
     let followed: any = await this.followerModel.find({followed: uid}).populate("uid").populate("followed");
@@ -52,6 +53,8 @@ export class FollowerService {
        "followed": followed
     }
   }
+
+  async getUid(req: Http2ServerRequest, uidd?: string) { return (uidd) ? new ObjectId(uidd) : await this.userService.getUserObjectId(req); }
 
   /*
   findAll() {

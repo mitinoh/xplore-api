@@ -23,13 +23,14 @@ export class FollowerController {
   }
 */
 
-  @Get('/:operation/:name')
-  find(@Req() req: Http2ServerRequest, @Param("operation") operation: string, @Param("name") name: string) {
+  @Get('/:operation/:name/:uid')
+  find(@Req() req: Http2ServerRequest, @Param("operation") operation: string, @Param("name") name?: string, @Param("uid") uid?: string) {
+
     if (operation && operation.toLowerCase() == "follower")
       if(name && name.toLowerCase() == "count")
-        return this.followerService.getFollowCount(req);
-      else
-        return this.followerService.getFollow(req);
+        return this.followerService.getFollowCount(req, uid);
+      else if (name && name.toLowerCase() == "list")
+        return this.followerService.getFollow(req, uid);
   }
 
   /*
