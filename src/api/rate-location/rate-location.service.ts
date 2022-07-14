@@ -23,7 +23,7 @@ export class RateLocationService {
 
   async create(req: Http2ServerRequest, createRateLocationDto: CreateRateLocationDto) {
     try {
-      let uid: any =await this.userService.getUserObjectId(req) ?? '';
+      let uid: any =await this.userService.getUserObjectId(req) ;
       let newCreateNewLocation = new this.rateLocationModel({...createRateLocationDto, uid: uid}); 
       return await newCreateNewLocation.save();
     } catch (error) {
@@ -35,7 +35,9 @@ export class RateLocationService {
   async findAll(req: Http2ServerRequest, query: any) {
     try {
       let mQuery = this.mongooseParser.parse(query)
-      let uid: any = await this.userService.getUserObjectId(req) ?? '';
+      let uidd: string = mQuery.filter.uid;
+      delete mQuery.filter.uid
+      let uid: any = await this.userService.getUserObjectId(req, uidd) ;
       return await this.rateLocationModel
         .find({uid: uid})
         .populate('uid')

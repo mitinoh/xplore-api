@@ -9,6 +9,8 @@ import { Model } from "mongoose";
 import { Http2ServerRequest } from 'http2';
 import { ObjectId } from 'bson';
 import mongoose, {  mquery, PipelineStage } from 'mongoose';
+import { MongoQueryModel } from 'nest-mongo-query-parser/dist/lib/model/mongo.query.model';
+import { MongooseQueryParser } from 'mongoose-query-parser';
 
 @Injectable()
 export class FollowerService {
@@ -17,6 +19,7 @@ export class FollowerService {
     @Inject('winston') private readonly logger: Logger,
     private authService: AuthService,
     private readonly userService: UserService) { }
+    mongooseParser = new MongooseQueryParser()
 
   async create(req: Http2ServerRequest, createFollowerDto: CreateFollowerDto) {
     try {
@@ -29,24 +32,29 @@ export class FollowerService {
     }
   }
 
-  async getFollowCount(req: Http2ServerRequest, uidd?: string) {
+  async getFollowCount(req: Http2ServerRequest, query: MongoQueryModel) {
 
-    let uid: any = await this.getUid(req, uidd)
-   //let uid: any = new ObjectId("62b8c9cabb48ee55a97e465c")  
-   console.log(uid)
-   let follwing: number = await this.followerModel.find({uid: uid}).countDocuments();
-   let follwed: number = await this.followerModel.find({followed: uid}).countDocuments();
-   return {
+    let mQuery = this.mongooseParser.parse(query)
+    let uidd: string = mQuery.filter.uid;
+    delete mQuery.filter.uid
+
+    let uid: any = await this.userService.getUserObjectId(req, uidd)
+    let follwing: number = await this.followerModel.find({uid: uid}).countDocuments();
+    let follwed: number = await this.followerModel.find({followed: uid}).countDocuments();
+    return {
       "following": follwing,
       "followed": follwed
-   }
- }
+    }
+  }
 
-  async getFollow(req: Http2ServerRequest, uidd?: string) {
-    let uid: any = await this.getUid(req, uidd)
+  async getFollow(req: Http2ServerRequest, query: MongoQueryModel) {
 
-    let following: any = await this.followerModel.find({uid: uid}).populate("uid").populate("followed");
-    let followed: any = await this.followerModel.find({followed: uid}).populate("uid").populate("followed");
+    let mQuery = this.mongooseParser.parse(query)
+    let uidd: string = mQuery.filter.uid;
+    delete mQuery.filter.uid
+    
+    let following: any = await this.followerModel.find({uid: uidd}).populate("uid").populate("followed");
+    let followed: any = await this.followerModel.find({followed: uidd}).populate("uid").populate("followed");
    
     return {
        "following": following,
@@ -54,7 +62,6 @@ export class FollowerService {
     }
   }
 
-  async getUid(req: Http2ServerRequest, uidd?: string) { return (uidd) ? new ObjectId(uidd) : await this.userService.getUserObjectId(req); }
 
   /*
   findAll() {

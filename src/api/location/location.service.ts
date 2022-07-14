@@ -45,7 +45,7 @@ export class LocationService {
     try {
 
     let mQuery = this.mongooseParser.parse(query);
-    let searchDoc: string = mQuery.filter.searchDoc ; // chiave per ricercare in tutto il doc
+    let searchDoc: string = mQuery.filter.searchDoc; // chiave per ricercare in tutto il doc
     let coordinateFilter = new CoordinateFilter(mQuery.filter.latitude, mQuery.filter.longitude, mQuery.filter.distance)
     delete mQuery.filter.latitude;
     delete mQuery.filter.longitude;

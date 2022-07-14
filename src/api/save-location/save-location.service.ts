@@ -31,10 +31,13 @@ export class SaveLocationService {
     }
   }
 
-  async findAll(req: Http2ServerRequest ,query: MongoQueryModel) {
+  async findAll(req: Http2ServerRequest, query: MongoQueryModel) {
     try {
+
       let mQuery = this.mongooseParser.parse(query)
-      let uid: any = await this.userService.getUserObjectId(req) ?? undefined;
+      let uidd: string = mQuery.filter.uid;
+      delete mQuery.filter.uid
+      let uid: any = await this.userService.getUserObjectId(req, uidd) ;
      return await this.saveLocationModel
         .find({uid: uid})
         .populate('uid')

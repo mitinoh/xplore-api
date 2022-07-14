@@ -9,6 +9,7 @@ import { ImageService } from '../image/image.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User, UserDocument } from './entities/user.entity';
+import { ObjectId } from 'bson';
 
 @Injectable()
 export class UserService {
@@ -94,8 +95,11 @@ export class UserService {
   }
 
 
-  async getUserObjectId(req: any) {
+  async getUserObjectId(req: any, uid?: string) {
     try {
+
+      if (uid) 
+        return new ObjectId(uid)
       let fid: string = await this.authService.getUserToken(req)
       if (fid && fid != null && fid.trim() != "") {
 

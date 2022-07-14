@@ -9,6 +9,7 @@ import { MongoQueryModel } from 'nest-mongo-query-parser';
 import { UserService } from '../user/user.service';
 import { InjectModel } from '@nestjs/mongoose';
 import { VisitLocation, VisitLocationDocument } from './entities/visit-location.entity';
+import { MongooseQueryParser } from 'mongoose-query-parser';
 
 @Injectable()
 export class VisitLocationService {
@@ -18,6 +19,7 @@ export class VisitLocationService {
     @Inject('winston') private readonly logger: Logger,
     private authService: AuthService, 
     private readonly userService: UserService) { }
+    mongooseParser = new MongooseQueryParser()
   
   async create(req: Http2ServerRequest, createVisitLocationDto: CreateVisitLocationDto) {
     try {
@@ -30,10 +32,17 @@ export class VisitLocationService {
     }
   }
 
-  async findAll(query: MongoQueryModel) {
+  async findAll(req: Http2ServerRequest, query: MongoQueryModel) {
     try {
+
+      let mQuery = this.mongooseParser.parse(query)
+      let uidd: string = mQuery.filter.uid;
+      delete mQuery.filter.uid
+      let uid: any = await this.userService.getUserObjectId(req, uidd) ;
+
+
       return await this.visitLocationModel
-        .find(query.filter)
+        .find({uid: uid})
         .populate('uid')
         .populate('location')
         .limit(query.limit)

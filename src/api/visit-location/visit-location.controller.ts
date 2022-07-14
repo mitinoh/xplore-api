@@ -24,8 +24,8 @@ export class VisitLocationController {
   @ApiQuery({ name: 'uid', type: 'objectId', required: false })
   @ApiQuery({ name: 'location', type: 'objectId', required: false })
   @Get()
-  findAll(@Query() query: any) {
-    return this.visitLocationService.findAll(query);
+  findAll(@Req() req: Http2ServerRequest, @Query() query: any) {
+    return this.visitLocationService.findAll(req, query);
   }
 
   @Get(':id')
