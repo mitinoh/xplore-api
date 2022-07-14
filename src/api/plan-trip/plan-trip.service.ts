@@ -35,7 +35,6 @@ export class PlanTripService {
 
   async findAll(req: Http2ServerRequest, query: any) {
     try {
-      
       let uid: any = await this.userService.getUserObjectId(req) ?? undefined; 
       let mQuery = this.mongooseParser.parse(query)
       mQuery.filter.uid = uid
@@ -57,15 +56,23 @@ export class PlanTripService {
         .skip(mQuery.skip)
         .sort(mQuery.sort)
         .select(mQuery.select)
+    } catch (error) {
+      this.logger.error(error.toString())
+      throw new HttpException(error.message, HttpStatus.EXPECTATION_FAILED);
+    }
+  }
 
+  async getCount(req: Http2ServerRequest, query: any) {
+    try {
 
-      return await this.newPlanTripnModel
-        .aggregate(this.getMongoAggregation(query))
-      //  .find(query.filter)
-      //   .limit(query.limit)
-      //   .skip(query.skip)
-      //   .sort(query.sort)
-      //   .select(query.select) 
+      let mQuery = this.mongooseParser.parse(query)
+      let uidd: string = mQuery.filter.uid;
+      delete mQuery.filter.uid
+
+      let uid: any = await this.userService.getUserObjectId(req, uidd); 
+      mQuery.filter.uid = uid
+      return this.newPlanTripnModel
+        .find(mQuery.filter).countDocuments()
     } catch (error) {
       this.logger.error(error.toString())
       throw new HttpException(error.message, HttpStatus.EXPECTATION_FAILED);

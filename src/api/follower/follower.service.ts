@@ -11,6 +11,7 @@ import { ObjectId } from 'bson';
 import mongoose, {  mquery, PipelineStage } from 'mongoose';
 import { MongoQueryModel } from 'nest-mongo-query-parser/dist/lib/model/mongo.query.model';
 import { MongooseQueryParser } from 'mongoose-query-parser';
+import { PlanTripService } from '../plan-trip/plan-trip.service';
 
 @Injectable()
 export class FollowerService {
@@ -18,7 +19,8 @@ export class FollowerService {
     @InjectModel(Follower.name) private followerModel: Model<FollowerDocument>,
     @Inject('winston') private readonly logger: Logger,
     private authService: AuthService,
-    private readonly userService: UserService) { }
+    private readonly userService: UserService,
+    private readonly planTripService: PlanTripService) { }
     mongooseParser = new MongooseQueryParser()
 
   async create(req: Http2ServerRequest, createFollowerDto: CreateFollowerDto) {
@@ -32,6 +34,7 @@ export class FollowerService {
     }
   }
 
+  // TODO: invece che ritornare questo e basta spostare in userService e ritornare tutit i count che servono
   async getFollowCount(req: Http2ServerRequest, query: MongoQueryModel) {
 
     let mQuery = this.mongooseParser.parse(query)
@@ -41,9 +44,12 @@ export class FollowerService {
     let uid: any = await this.userService.getUserObjectId(req, uidd)
     let follwing: number = await this.followerModel.find({uid: uid}).countDocuments();
     let follwed: number = await this.followerModel.find({followed: uid}).countDocuments();
+    let plannedTrip: number = await this.planTripService.getCount(req, query);
     return {
       "following": follwing,
-      "followed": follwed
+      "followed": follwed,
+      "plannedTrip": plannedTrip
+
     }
   }
 
@@ -53,8 +59,10 @@ export class FollowerService {
     let uidd: string = mQuery.filter.uid;
     delete mQuery.filter.uid
     
-    let following: any = await this.followerModel.find({uid: uidd}).populate("uid").populate("followed");
-    let followed: any = await this.followerModel.find({followed: uidd}).populate("uid").populate("followed");
+    let uid: any = await this.userService.getUserObjectId(req, uidd)
+
+    let following: any = await this.followerModel.find({uid: uid}).populate("uid").populate("followed");
+    let followed: any = await this.followerModel.find({followed: uid}).populate("uid").populate("followed");
    
     return {
        "following": following,
