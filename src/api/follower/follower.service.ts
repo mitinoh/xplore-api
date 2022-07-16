@@ -70,6 +70,18 @@ export class FollowerService {
     }
   }
 
+  async isFollowing(req: Http2ServerRequest, query: MongoQueryModel) {
+
+    let mQuery = this.mongooseParser.parse(query)
+    let followed: string = mQuery.filter.uid;
+    delete mQuery.filter.uid
+    
+    let uid: any = await this.userService.getUserObjectId(req)
+
+    let following: any = await this.followerModel.find({uid: uid, followed: followed});
+    return (following.length > 0);
+  }
+
 
   /*
   findAll() {

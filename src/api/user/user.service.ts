@@ -40,15 +40,15 @@ export class UserService {
       let mQuery = this.mongooseParser.parse(query);
       return await this.userModel
         .find(mQuery.filter)
-        .populate({
+        /*.populate({
           path: "following",
           match: { uid: uid }
-        })
+        })*/
         .limit(mQuery.limit)
         .skip(mQuery.skip)
         .sort(mQuery.sort)
         .select(mQuery.select)
-        .lean()
+        /*.lean()
         .then(async (users: any[]) => {
           users.forEach((user: any, i: number) => {
             if (user["following"].length > 0)
@@ -57,7 +57,7 @@ export class UserService {
               user["following"] = false;
           })
           return users
-        })
+        })*/
     } catch (error) {
       this.logger.error(error)
       throw new HttpException(error.message, HttpStatus.EXPECTATION_FAILED);

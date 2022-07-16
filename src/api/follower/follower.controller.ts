@@ -17,6 +17,7 @@ export class FollowerController {
       return this.followerService.follow(req, followed);
     else if (operation && operation.toLowerCase() == "unfollow") 
       return this.followerService.unfollow(req, followed);
+  
   }
 
   /*
@@ -26,13 +27,15 @@ export class FollowerController {
   }
 */
 
-  @Get('/:operation/:name')
-  find(@Req() req: Http2ServerRequest, @Param("operation") operation: string, @Param("name") name: string, @Query() query: any) {
-    if (operation && operation.toLowerCase() == "follower")
-      if(name && name.toLowerCase() == "count")
+  @Get('/:operation')
+  find(@Req() req: Http2ServerRequest, @Param("operation") operation: string, @Query() query: any) {
+
+      if(operation && operation.toLowerCase() == "count")
         return this.followerService.getFollowCount(req, query);
-      else if (name && name.toLowerCase() == "list")
+      else if (operation && operation.toLowerCase() == "list")
         return this.followerService.getFollow(req, query);
+      else if (operation && operation.toLowerCase() == "isfollowing")
+        return this.followerService.isFollowing(req, query)
   }
 
   /*

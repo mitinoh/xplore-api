@@ -35,9 +35,9 @@ export type UserDocument = User & Document;
 const UserSchema = SchemaFactory.createForClass(User);
 UserSchema.plugin(uniqueValidator,{ message: '{PATH} must be unique' });
 
-UserSchema.virtual('following', {
-    ref: 'Follower',                // fetch from User model
+/*UserSchema.virtual('following', {
+    ref: 'Follower',           
     localField: '_id',
     foreignField: 'followed'
-})
+})*/
 export { UserSchema }
