@@ -20,8 +20,8 @@ export class UserController {
   }
 
   @Get()
-  findAll(@Query() query: any) {
-    return this.userService.findAll(query);
+  findAll(@Req() req: Http2ServerRequest, @Query() query: any) {
+    return this.userService.findAll(req, query);
   }
 
   @Get(':id')

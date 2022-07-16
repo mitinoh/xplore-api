@@ -11,9 +11,12 @@ import { NONAME } from 'dns';
 export class FollowerController {
   constructor(private readonly followerService: FollowerService) {}
 
-  @Post()
-  create(@Req() req: Http2ServerRequest, @Body() createFollowerDto: CreateFollowerDto) {
-    return this.followerService.create(req, createFollowerDto);
+  @Post('/:operation/:followed')
+  create(@Req() req: Http2ServerRequest, @Param("operation") operation: string, @Param("followed") followed: string ) {
+    if (operation && operation.toLowerCase() == "follow")
+      return this.followerService.follow(req, followed);
+    else if (operation && operation.toLowerCase() == "unfollow") 
+      return this.followerService.unfollow(req, followed);
   }
 
   /*
@@ -43,8 +46,10 @@ export class FollowerController {
     return this.followerService.update(id, updateFollowerDto);
   }
 */
+/*
   @Delete(':id')
   remove(@Req() req: Http2ServerRequest, @Param('id') id: string) {
-    return this.followerService.remove(req, id);
+    return this.followerService.unfollow(req, id);
   }
+  */
 }

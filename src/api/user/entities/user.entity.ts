@@ -6,7 +6,7 @@ import { Document, Schema as MongooseSchema } from "mongoose";
 
 var uniqueValidator = require('mongoose-unique-validator');
 
-@Schema()
+@Schema({ toJSON: { virtuals: true, getters: true }, toObject: { virtuals: true, getters: true } })
 export class User {
     @ApiProperty({ type: MongooseSchema.Types.ObjectId })
     @Prop(() => MongooseSchema.Types.ObjectId)
@@ -27,9 +27,17 @@ export class User {
 
     @Prop({ type: Date })
     cdate: Date
+
+    
 }
 
 export type UserDocument = User & Document;
 const UserSchema = SchemaFactory.createForClass(User);
 UserSchema.plugin(uniqueValidator,{ message: '{PATH} must be unique' });
+
+UserSchema.virtual('following', {
+    ref: 'Follower',                // fetch from User model
+    localField: '_id',
+    foreignField: 'followed'
+})
 export { UserSchema }

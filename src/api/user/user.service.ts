@@ -32,15 +32,32 @@ export class UserService {
     }
   }
 
-  async findAll(query: any) {
+  async findAll(req: Http2ServerRequest, query: any) {
     try {
+
+      let uid: any = await this.getUserObjectId(req);
+
       let mQuery = this.mongooseParser.parse(query);
       return await this.userModel
         .find(mQuery.filter)
+        .populate({
+          path: "following",
+          match: { uid: uid }
+        })
         .limit(mQuery.limit)
         .skip(mQuery.skip)
         .sort(mQuery.sort)
         .select(mQuery.select)
+        .lean()
+        .then(async (users: any[]) => {
+          users.forEach((user: any, i: number) => {
+            if (user["following"].length > 0)
+              user["following"] = true;
+            else
+              user["following"] = false;
+          })
+          return users
+        })
     } catch (error) {
       this.logger.error(error)
       throw new HttpException(error.message, HttpStatus.EXPECTATION_FAILED);

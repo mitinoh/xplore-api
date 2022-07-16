@@ -23,10 +23,10 @@ export class FollowerService {
     private readonly planTripService: PlanTripService) { }
     mongooseParser = new MongooseQueryParser()
 
-  async create(req: Http2ServerRequest, createFollowerDto: CreateFollowerDto) {
+  async follow(req: Http2ServerRequest, followed: string) {
     try {
       let uid: any = await this.userService.getUserObjectId(req);
-      let newCreateFollower = new this.followerModel({ ...createFollowerDto, uid: uid });
+      let newCreateFollower = new this.followerModel({ followed:  followed, uid: uid });
       return await newCreateFollower.save();
     } catch (error) {
       this.logger.error(error.message)
@@ -84,7 +84,7 @@ export class FollowerService {
     return `This action updates a #${id} follower`;
   }
 */
-  async remove(req: Http2ServerRequest, id: string) {
+  async unfollow(req: Http2ServerRequest, id: string) {
     try {
       let uid: any = await this.userService.getUserObjectId(req);
       let followed = new mongoose.Types.ObjectId(id)
