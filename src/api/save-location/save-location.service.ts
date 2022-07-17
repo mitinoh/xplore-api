@@ -10,6 +10,7 @@ import { CreateSaveLocationDto } from './dto/create-save-location.dto';
 import { UpdateSaveLocationDto } from './dto/update-save-location.dto';
 import { SaveLocation, SaveLocationDocument } from './entities/save-location.entity';
 
+import { ObjectId } from 'bson';
 @Injectable()
 export class SaveLocationService {
 
@@ -38,8 +39,10 @@ export class SaveLocationService {
       let uidd: string = mQuery.filter.uid;
       delete mQuery.filter.uid
       let uid: any = await this.userService.getUserObjectId(req, uidd) ;
-     return await this.saveLocationModel
-        .find({uid: uid})
+
+      mQuery.filter.uid = uid;
+      return await this.saveLocationModel
+        .find(mQuery.filter)
         .populate('uid')
         .populate({
           path: 'location',
