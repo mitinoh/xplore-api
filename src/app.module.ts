@@ -15,6 +15,7 @@ import { NewLocationModule } from './api/new-location/new-location.module';
 import { PlanTripModule } from './api/plan-trip/plan-trip.module';
 import { RateLocationModule } from './api/rate-location/rate-location.module';
 import { SaveLocationModule } from './api/save-location/save-location.module';
+import { UserReportModule } from './api/user-report/user-report.module';
 import { UserModule } from './api/user/user.module';
 import { VisitLocationModule } from './api/visit-location/visit-location.module';
 import { assetDir, logConf, MONGO_CONNECTION, pth } from './app.properties';
@@ -37,6 +38,7 @@ require('winston-daily-rotate-file');
     VisitLocationModule,
     FollowerModule,
     ImageModule,
+    UserReportModule,
     /*
     MongooseModule.forRootAsync({
       useFactory: async (config: any) => ({

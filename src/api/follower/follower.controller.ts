@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Query, ValidationPipe, UsePipes } from '@nestjs/common';
 import { FollowerService } from './follower.service';
 import { CreateFollowerDto } from './dto/create-follower.dto';
 import { UpdateFollowerDto } from './dto/update-follower.dto';
@@ -12,6 +12,7 @@ export class FollowerController {
   constructor(private readonly followerService: FollowerService) {}
 
   @Post('/:operation/:followed')
+  @UsePipes(new ValidationPipe({ transform: true }))
   create(@Req() req: Http2ServerRequest, @Param("operation") operation: string, @Param("followed") followed: string ) {
     if (operation && operation.toLowerCase() == "follow")
       return this.followerService.follow(req, followed);
