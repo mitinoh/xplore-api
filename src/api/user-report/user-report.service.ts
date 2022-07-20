@@ -23,8 +23,9 @@ export class UserReportService {
   async create(req: Http2ServerRequest, createUserReportDto: CreateUserReportDto) {
     try {
       // REVIEW: ricordarsi di inserire nel db user xplore con questo objId
-      let uid: any = await this.userService.getUserObjectId(req);
-      let newUserReport = new this.userReportModel({ ...createUserReportDto, reporter: uid });
+      let reporter: any = await this.userService.getUserObjectId(req);
+
+      let newUserReport = new this.userReportModel({ ...createUserReportDto, reporter: reporter});
       return await newUserReport.save();
     } catch (error) {
       this.logger.error(error.message)

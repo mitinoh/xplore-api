@@ -27,7 +27,7 @@ export class NewLocationService {
 
     try {
       let base64 = createNewLocationDto.base64
-      let uid: any = await this.userService.getUserObjectId(req) ?? '';
+      let uid: any = await this.userService.getUserObjectId(req);
       delete createNewLocationDto.base64
       let newCreateNewLocation = new this.newLocationModel({ ...createNewLocationDto, uid: uid });
       let newLocationObj = await newCreateNewLocation.save();
