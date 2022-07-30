@@ -16,6 +16,8 @@ import { ObjectId } from 'bson';
 
 import { MongooseQueryParser } from 'mongoose-query-parser';
 import { CoordinateFilter } from './entities/coordinate.interface';
+import { LocationCategoryService } from '../location-category/location-category.service';
+import { LocationCategory, LocationCategoryDocument } from '../location-category/entities/location-category.entity';
 
 @Injectable()
 export class LocationService {
@@ -26,7 +28,8 @@ export class LocationService {
     @InjectModel(SaveLocation.name) private saveLocationModel: Model<SaveLocationDocument>,
     @Inject('winston') private readonly logger: Logger,
     private authService: AuthService,
-    private readonly userService: UserService) { }
+    private readonly userService: UserService,
+    private readonly locationCategoryService: LocationCategoryService) { }
 
   async create(req: Http2ServerRequest, createLocationDto: CreateLocationDto) {
     try {
@@ -43,7 +46,7 @@ export class LocationService {
   mongooseParser = new MongooseQueryParser()
   async findAll(req: Http2ServerRequest, query: any) {
     try {
-
+      console.log(query)
     let mQuery = this.mongooseParser.parse(query);
     let searchDoc: string = mQuery.filter.searchDoc; // chiave per ricercare in tutto il doc
     let coordinateFilter = new CoordinateFilter(mQuery.filter.latitude, mQuery.filter.longitude, mQuery.filter.distance)
@@ -52,6 +55,13 @@ export class LocationService {
     delete mQuery.filter.distance;
     delete mQuery.filter.searchDoc
     
+    let locationCategoriesId: string[] = []
+
+    if(searchDoc) {
+      let locationCategories: LocationCategoryDocument[] = await this.locationCategoryService.findAll({name: searchDoc})
+      locationCategoriesId = locationCategories.map((locationCategory : LocationCategoryDocument) => locationCategory._id.toString())
+    }  
+
       if(coordinateFilter.latitude && coordinateFilter.longitude && coordinateFilter.distance)
         mQuery.filter.geometry = {
           $near:
@@ -68,7 +78,7 @@ export class LocationService {
         }
 
       if(searchDoc)  {
-        mQuery.filter.$or = [ { name: { $regex: searchDoc, $options: 'i' }},{ desc: { $regex: searchDoc, $options: 'i' }} ]
+        mQuery.filter.$or = [ { name: { $regex: searchDoc, $options: 'i' }},{ desc: { $regex: searchDoc, $options: 'i' }}, {locationCategory: { $in: locationCategoriesId}} ]
       }
       //let uid = "62a4b356a999f69566175df6"
       let uid: any = await this.userService.getUserObjectId(req) ;

@@ -1,0 +1,14 @@
+107.174.186.223.nip.io {
+      #tls internal
+      #reverse_proxy localhost:3000 
+      #respond "Hello world"
+      handle_path /img/* {
+         root * /var/www/html/img
+         file_server
+      }
+      handle {
+         reverse_proxy localhost:3000
+      }
+}
+
+
