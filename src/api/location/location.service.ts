@@ -46,7 +46,7 @@ export class LocationService {
   mongooseParser = new MongooseQueryParser()
   async findAll(req: Http2ServerRequest, query: any) {
     try {
-      console.log(query)
+
     let mQuery = this.mongooseParser.parse(query);
     let searchDoc: string = mQuery.filter.searchDoc; // chiave per ricercare in tutto il doc
     let coordinateFilter = new CoordinateFilter(mQuery.filter.latitude, mQuery.filter.longitude, mQuery.filter.distance)
@@ -80,23 +80,30 @@ export class LocationService {
       if(searchDoc)  {
         mQuery.filter.$or = [ { name: { $regex: searchDoc, $options: 'i' }},{ desc: { $regex: searchDoc, $options: 'i' }}, {locationCategory: { $in: locationCategoriesId}} ]
       }
-      //let uid = "62a4b356a999f69566175df6"
-      let uid: any = await this.userService.getUserObjectId(req) ;
+      let uid = "62a4b356a999f69566175df6"
+      //let uid: any = await this.userService.getUserObjectId(req);
       
       return await this.locationModel
         .find(mQuery.filter)
         .populate('locationCategory')
         .populate('insertUid')
         .populate(uid ? {
-          path: "saved",
+          path: "savedList",
           match: { uid: uid },
           select: 'cdate'
         }: {
-          path: "saved",
+          path: "savedList",
         })
         .limit(query.limit)
         .skip(query.skip)
         .sort(query.sort)
+        .then(async (locations: LocationDocument[]) => {
+          if (uid)
+            locations.forEach((location: any, i: number) => {
+              location.saved = location.savedList.length > 0 
+            })
+          return locations
+        })
 
 
     } catch (error) {
@@ -108,14 +115,14 @@ export class LocationService {
   async findAllUploaded(req: Http2ServerRequest, query: any) {
     try {
 
-      let uid: any = await this.userService.getUserObjectId(req) ?? '';
+      let uid: any = await this.userService.getUserObjectId(req) ;
 
       return await this.locationModel
         .find({ insertUid: uid })
         .populate('locationCategory')
         .populate('insertUid')
         .populate({
-          path: "saved",
+          path: "savedList",
           match: { uid: uid },
           select: 'cdate'
         })

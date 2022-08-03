@@ -23,7 +23,7 @@ export class SaveLocationService {
 
   async create(req: Http2ServerRequest, createSaveLocationDto: CreateSaveLocationDto) {
     try {
-      let uid: any = await this.userService.getUserObjectId(req) ?? '';
+      let uid: any = await this.userService.getUserObjectId(req);
       let newCreateSaveLocation = new this.saveLocationModel({ ...createSaveLocationDto, uid: uid });
       return await newCreateSaveLocation.save();
     } catch (error) {
@@ -50,7 +50,7 @@ export class SaveLocationService {
             path: 'locationCategory',
             model: 'LocationCategory'
           }, {
-          path: "saved",
+          path: "savedList",
           match: { uid: uid },
           }]
         })

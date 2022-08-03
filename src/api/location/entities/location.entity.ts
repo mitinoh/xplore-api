@@ -54,11 +54,11 @@ export class Location {
     locationCategory: LocationCategory[]
 
 
-    /*
+    
     @ApiProperty({ type: Boolean })
     @Prop()
     saved: boolean
-    */
+    
 
     @ApiProperty({ type: User })
     @Prop({ type: MongooseSchema.Types.ObjectId, ref: User.name })
@@ -82,7 +82,7 @@ const LocationSchema = SchemaFactory.createForClass(Location);
 
 
 
-LocationSchema.virtual('saved', {
+LocationSchema.virtual('savedList', {
     ref: 'SaveLocation',                // fetch from User model
     localField: '_id',
     foreignField: 'location'
