@@ -80,8 +80,8 @@ export class LocationService {
       if(searchDoc)  {
         mQuery.filter.$or = [ { name: { $regex: searchDoc, $options: 'i' }},{ desc: { $regex: searchDoc, $options: 'i' }}, {locationCategory: { $in: locationCategoriesId}} ]
       }
-      let uid = "62a4b356a999f69566175df6"
-      //let uid: any = await this.userService.getUserObjectId(req);
+      //let uid = "62a4b356a999f69566175df6"
+      let uid: any = await this.userService.getUserObjectId(req);
       
       return await this.locationModel
         .find(mQuery.filter)

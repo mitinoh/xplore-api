@@ -21,9 +21,13 @@ export class SaveLocationService {
     private readonly userService: UserService) { }
     mongooseParser = new MongooseQueryParser()
 
-  async create(req: Http2ServerRequest, createSaveLocationDto: CreateSaveLocationDto) {
+  async create(req: Http2ServerRequest, locationId: string) {
     try {
       let uid: any = await this.userService.getUserObjectId(req);
+      let createSaveLocationDto: CreateSaveLocationDto = {
+        location: new ObjectId(locationId),
+        cdate: new Date()
+      }
       let newCreateSaveLocation = new this.saveLocationModel({ ...createSaveLocationDto, uid: uid });
       return await newCreateSaveLocation.save();
     } catch (error) {
@@ -38,7 +42,7 @@ export class SaveLocationService {
       let mQuery = this.mongooseParser.parse(query)
       let uidd: string = mQuery.filter.uid;
       delete mQuery.filter.uid
-      let uid: any = await this.userService.getUserObjectId(req, uidd) ;
+      let uid: any = await this.userService.getUserObjectId(req, uidd);
 
       mQuery.filter.uid = uid;
       return await this.saveLocationModel
@@ -78,33 +82,36 @@ export class SaveLocationService {
     }
   }
 
-  async findOne(id: string) {
+  async findOne(req: Http2ServerRequest, locationId: string) {
     try {
-      return await this.saveLocationModel.findOne({ _id: id });
+      let uid: any = await this.userService.getUserObjectId(req); 
+      return await this.saveLocationModel.findOne({ location: new ObjectId(locationId), uid: uid });
     } catch (error) {
       this.logger.error(error)
       throw new HttpException(error.message, HttpStatus.EXPECTATION_FAILED);
     }
   }
 
-  async update(id: string, updateSaveLocationDto: UpdateSaveLocationDto) {
+  async toggleLike(req: Http2ServerRequest, id: string) {
     try {
-      return await this.saveLocationModel.findOneAndUpdate(
-        { _id: id },
-        updateSaveLocationDto,
-        { new: false }
-      )
+      let locationToUpdate: SaveLocationDocument = await this.findOne(req, id)
+      console.log(locationToUpdate) 
+      if (locationToUpdate == null)
+        return this.create(req, id);
+      else 
+        return this.delete(req, id)
+ 
     } catch (error) {
       this.logger.error(error)
       throw new HttpException(error.message, HttpStatus.EXPECTATION_FAILED);
     }
   }
 
-  async remove(req: Http2ServerRequest, id: string) {
+  async delete(req: Http2ServerRequest, id: string) {
     try {
 
       let objId = new mongoose.Types.ObjectId(id)
-      let uid: any = await this.userService.getUserObjectId(req) ?? '';
+      let uid: any = await this.userService.getUserObjectId(req) ;
       let ret = await this.saveLocationModel.deleteOne({ locationId: objId, uid: uid._id.toString() })
       return ret.deletedCount > 0
     } catch (error) {

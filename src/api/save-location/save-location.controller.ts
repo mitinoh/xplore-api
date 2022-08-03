@@ -11,11 +11,7 @@ import { ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
 export class SaveLocationController {
   constructor(private readonly saveLocationService: SaveLocationService) {}
 
-  @Post()
-  @UsePipes(new ValidationPipe({ transform: true }))
-  create(@Req() req: Http2ServerRequest, @Body() createSaveLocationDto: CreateSaveLocationDto) {
-    return this.saveLocationService.create(req, createSaveLocationDto);
-  }
+
 
   @ApiQuery({ name: 'uid', type: 'objecId', required: false })
   @ApiQuery({ name: 'location', type: 'objectId', required: false })
@@ -24,22 +20,37 @@ export class SaveLocationController {
     return this.saveLocationService.findAll(req, query);
   }
 
+  /*
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.saveLocationService.findOne(id);
   }
-/*
+  */
+
   @Patch(':id')
-  @ApiBody({
-    type: CreateSaveLocationDto
-  })
-  update(@Param('id') id: string, @Body() updateSaveLocationDto: UpdateSaveLocationDto) {
-    return this.saveLocationService.update(id, updateSaveLocationDto);
+  toggle(@Req() req: Http2ServerRequest, @Param('id') id: string) {
+    return this.saveLocationService.toggleLike(req, id);
   }
 
-  */
-  @Delete(':id')
-  remove(@Req() req: Http2ServerRequest, @Param('id') id: string) {
-    return this.saveLocationService.remove(req, id);
-  }
+
+
+  /**
+   * @deprecated 
+   */
+  /*
+    @Delete(':id')
+    remove(@Req() req: Http2ServerRequest, @Param('id') id: string) {
+      return this.saveLocationService.remove(req, id);
+    }
+    */
+
+    /**
+   * @deprecated 
+   */
+  /*
+    @Post()
+    @UsePipes(new ValidationPipe({ transform: true }))
+    create(@Req() req: Http2ServerRequest, @Body() createSaveLocationDto: CreateSaveLocationDto) {
+      return this.saveLocationService.create(req, createSaveLocationDto);
+    }*/
 }

@@ -2,12 +2,13 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsMongoId, IsNotEmpty, IsObject } from "class-validator";
 import { Document, Schema as MongooseSchema, Types } from "mongoose";
+import { ObjectId } from 'bson';
 export class CreateSaveLocationDto {
 
-    @ApiProperty({type: MongooseSchema.Types.ObjectId})
+    @ApiProperty({type: ObjectId})
     @IsNotEmpty()
     @IsMongoId()
-    location: MongooseSchema.Types.ObjectId
+    location: ObjectId
 
-    cdate: number = Date.now();
+    cdate: Date = new Date();
 }
