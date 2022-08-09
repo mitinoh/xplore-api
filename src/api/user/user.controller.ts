@@ -24,9 +24,12 @@ export class UserController {
     return this.userService.findAll(req, query);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(id);
+  @Get('/:operation/:id')
+  findOne(@Param("operation") operation: string, @Param('id') id: string) {
+    if (operation && operation.toLowerCase() == "fid")
+      return this.userService.findByFid(id);
+    else 
+      return this.userService.findOne(id);
   }
 
   @Patch()

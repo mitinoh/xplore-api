@@ -29,7 +29,8 @@ export class SaveLocationService {
         cdate: new Date()
       }
       let newCreateSaveLocation = new this.saveLocationModel({ ...createSaveLocationDto, uid: uid });
-      return await newCreateSaveLocation.save();
+      await newCreateSaveLocation.save();
+      return true
     } catch (error) {
       this.logger.error(error)
       throw new HttpException(error.message, HttpStatus.EXPECTATION_FAILED);
@@ -92,15 +93,14 @@ export class SaveLocationService {
     }
   }
 
-  async toggleLike(req: Http2ServerRequest, id: string) {
+  async toggleLike(req: Http2ServerRequest, id: string): Promise<Boolean> {
     try {
       let locationToUpdate: SaveLocationDocument = await this.findOne(req, id)
-      console.log(locationToUpdate) 
       if (locationToUpdate == null)
-        return this.create(req, id);
+         this.create(req, id);
       else 
-        return this.delete(req, id)
- 
+         this.delete(req, id)
+      return true;
     } catch (error) {
       this.logger.error(error)
       throw new HttpException(error.message, HttpStatus.EXPECTATION_FAILED);
