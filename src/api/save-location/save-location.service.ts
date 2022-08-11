@@ -75,7 +75,10 @@ export class SaveLocationService {
             if (loc["location"] == null)
               savedLocations.splice(i, 1);
           })
-          return savedLocations.map((location) => location.location)
+          return savedLocations.map((location) => location.location).map((location: any) => {
+            location.saved = location.savedList.length > 0 ;
+            return location
+          })
         })
     } catch (error) {
       this.logger.error(error)
