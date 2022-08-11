@@ -70,12 +70,12 @@ export class SaveLocationService {
         .skip(mQuery.skip)
         .sort(mQuery.sort)
         .select(mQuery.select)
-        .then(async (locations: any[]) => {
-          locations.forEach((loc: any, i: number) => {
+        .then(async (savedLocations: any[]) => {
+          savedLocations.forEach((loc: any, i: number) => {
             if (loc["location"] == null)
-              locations.splice(i, 1);
+              savedLocations.splice(i, 1);
           })
-          return locations
+          return savedLocations.map((location) => location.location)
         })
     } catch (error) {
       this.logger.error(error)
