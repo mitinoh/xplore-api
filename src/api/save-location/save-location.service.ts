@@ -44,8 +44,10 @@ export class SaveLocationService {
       let uidd: string = mQuery.filter.uid;
       delete mQuery.filter.uid
       let uid: any = await this.userService.getUserObjectId(req, uidd);
-
+      let locationId: any = mQuery.filter._id;
+      delete mQuery.filter._id;
       mQuery.filter.uid = uid;
+
       return await this.saveLocationModel
         .find(mQuery.filter)
         .populate('uid')
@@ -64,7 +66,8 @@ export class SaveLocationService {
           populate: {
             path: 'insertUid',
             model: 'User'
-          }
+          },
+          match: {_id: locationId}
         })
         .limit(mQuery.limit)
         .skip(mQuery.skip)

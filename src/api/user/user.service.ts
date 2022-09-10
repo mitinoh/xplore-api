@@ -84,7 +84,7 @@ export class UserService {
 
   async update(req: Http2ServerRequest, updateUserDto: UpdateUserDto) {
     try {
-      let uid: any = await this.getUserObjectId(req) ?? '';
+      let uid: any = await this.getUserObjectId(req);
       let base64: string = updateUserDto.base64;
       delete updateUserDto.base64
 

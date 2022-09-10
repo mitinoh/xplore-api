@@ -43,7 +43,11 @@ export class NewLocation {
     @ApiProperty({ type: [MongooseSchema.Types.ObjectId] })
     @Prop([{ type: MongooseSchema.Types.ObjectId, ref: LocationCategory.name }])
     @Type(() => LocationCategory)
-    locationCategory: LocationCategory
+    locationCategory: LocationCategory[]
+
+
+
+
 
     /*
         @ApiProperty({ type: String })
