@@ -12,7 +12,8 @@ export const pathDir = {
 export const assetDir = {
   location: "asset/location/",
   badge: "asset/badge/",
-  user: "asset/user/"
+  user: "asset/user/",
+  all: "asset/all/"
 }
 export const logDir = {
   info: "info/",
@@ -24,6 +25,7 @@ export const pth = {
   location: pathDir.ass + assetDir.location,
   badge: pathDir.ass + assetDir.badge,
   user: pathDir.ass + assetDir.user,
+  all: pathDir.ass + assetDir.all,
   info: pathDir.log + logDir.info,
   debug: pathDir.log + logDir.debug,
   err: pathDir.log + logDir.error,

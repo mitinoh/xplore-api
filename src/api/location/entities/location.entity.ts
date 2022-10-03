@@ -32,11 +32,11 @@ export class Location {
     @ApiProperty({ type: String })
     @Prop()
     indication: string
-/*
-    @ApiProperty({ type: Coordinate })
-    @Prop({ required: true, type: Coordinate })
-    coordinate: Coordinate
-    */
+    /*
+        @ApiProperty({ type: Coordinate })
+        @Prop({ required: true, type: Coordinate })
+        coordinate: Coordinate
+        */
 
     @ApiProperty({ type: Number })
     @Prop()
@@ -53,20 +53,17 @@ export class Location {
     @Type(() => LocationCategory)
     locationCategory: LocationCategory[]
 
-
-    
     @ApiProperty({ type: Boolean })
     @Prop()
     saved: boolean
-    
 
     @ApiProperty({ type: User })
     @Prop({ type: MongooseSchema.Types.ObjectId, ref: User.name })
     @Type(() => User)
-    insertUid: User
+    uid: User
 
     @ApiProperty({ type: Geometry })
-    @Prop({ type: Geometry , index: "2dsphere"})
+    @Prop({ type: Geometry, index: "2dsphere" })
     @Type(() => Geometry)
     geometry: Geometry
 

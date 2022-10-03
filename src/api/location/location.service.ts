@@ -35,7 +35,7 @@ export class LocationService {
     try {
       // REVIEW: ricordarsi di inserire nel db user xplore con questo objId
       let uid: any = await this.userService.getUserObjectId(req) ?? new ObjectId('628fd24dbbe643a8f1816138');
-      let newCreateLocation = new this.locationModel({ ...createLocationDto, insertUid: uid });
+      let newCreateLocation = new this.locationModel({ ...createLocationDto, uid: uid });
       return await newCreateLocation.save();
     } catch (error) {
       this.logger.error(error.message)
@@ -47,22 +47,22 @@ export class LocationService {
   async findAll(req: Http2ServerRequest, query: any) {
     try {
 
-    let mQuery = this.mongooseParser.parse(query);
-    let searchDoc: string = mQuery.filter.searchDoc; // chiave per ricercare in tutto il doc
-    let coordinateFilter = new CoordinateFilter(mQuery.filter.latitude, mQuery.filter.longitude, mQuery.filter.distance)
-    delete mQuery.filter.latitude;
-    delete mQuery.filter.longitude;
-    delete mQuery.filter.distance;
-    delete mQuery.filter.searchDoc
-    
-    let locationCategoriesId: string[] = []
+      let mQuery = this.mongooseParser.parse(query);
+      let searchDoc: string = mQuery.filter.searchDoc; // chiave per ricercare in tutto il doc
+      let coordinateFilter = new CoordinateFilter(mQuery.filter.latitude, mQuery.filter.longitude, mQuery.filter.distance)
+      delete mQuery.filter.latitude;
+      delete mQuery.filter.longitude;
+      delete mQuery.filter.distance;
+      delete mQuery.filter.searchDoc
 
-    if(searchDoc) {
-      let locationCategories: LocationCategoryDocument[] = await this.locationCategoryService.findAll({name: searchDoc})
-      locationCategoriesId = locationCategories.map((locationCategory : LocationCategoryDocument) => locationCategory._id.toString())
-    }  
+      let locationCategoriesId: string[] = []
 
-      if(coordinateFilter.latitude && coordinateFilter.longitude && coordinateFilter.distance)
+      if (searchDoc) {
+        let locationCategories: LocationCategoryDocument[] = await this.locationCategoryService.findAll({ name: searchDoc })
+        locationCategoriesId = locationCategories.map((locationCategory: LocationCategoryDocument) => locationCategory._id.toString())
+      }
+
+      if (coordinateFilter.latitude && coordinateFilter.longitude && coordinateFilter.distance)
         mQuery.filter.geometry = {
           $near:
           {
@@ -77,21 +77,21 @@ export class LocationService {
           }
         }
 
-      if(searchDoc)  {
-        mQuery.filter.$or = [ { name: { $regex: searchDoc, $options: 'i' }},{ desc: { $regex: searchDoc, $options: 'i' }}, {locationCategory: { $in: locationCategoriesId}} ]
+      if (searchDoc) {
+        mQuery.filter.$or = [{ name: { $regex: searchDoc, $options: 'i' } }, { desc: { $regex: searchDoc, $options: 'i' } }, { locationCategory: { $in: locationCategoriesId } }]
       }
       //let uid = "62a4b356a999f69566175df6"
       let uid: any = await this.userService.getUserObjectId(req);
-      
+
       return await this.locationModel
         .find(mQuery.filter)
         .populate('locationCategory')
-        .populate('insertUid')
+        .populate('uid')
         .populate(uid ? {
           path: "savedList",
           match: { uid: uid },
           select: 'cdate'
-        }: {
+        } : {
           path: "savedList",
         })
         .limit(query.limit)
@@ -100,7 +100,7 @@ export class LocationService {
         .then(async (locations: LocationDocument[]) => {
           if (uid)
             locations.forEach((location: any, i: number) => {
-              location.saved = location.savedList.length > 0 
+              location.saved = location.savedList.length > 0
             })
           return locations
         })
@@ -115,12 +115,12 @@ export class LocationService {
   async findAllUploaded(req: Http2ServerRequest, query: any) {
     try {
 
-      let uid: any = await this.userService.getUserObjectId(req) ;
+      let uid: any = await this.userService.getUserObjectId(req);
 
       return await this.locationModel
-        .find({ insertUid: uid })
+        .find({ uid: uid })
         .populate('locationCategory')
-        .populate('insertUid')
+        .populate('uid')
         .populate({
           path: "savedList",
           match: { uid: uid },
@@ -210,9 +210,9 @@ export class LocationService {
       }, {
         '$lookup': {
           'from': 'users',
-          'localField': 'insertUid',
+          'localField': 'uid',
           'foreignField': '_id',
-          'as': 'insertUid'
+          'as': 'uid'
         }
       }, {
         '$unwind': {

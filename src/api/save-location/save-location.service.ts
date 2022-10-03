@@ -19,7 +19,7 @@ export class SaveLocationService {
     @Inject('winston') private readonly logger: Logger,
     private authService: AuthService,
     private readonly userService: UserService) { }
-    mongooseParser = new MongooseQueryParser()
+  mongooseParser = new MongooseQueryParser()
 
   async create(req: Http2ServerRequest, locationId: string) {
     try {
@@ -57,17 +57,17 @@ export class SaveLocationService {
             path: 'locationCategory',
             model: 'LocationCategory'
           }, {
-          path: "savedList",
-          match: { uid: uid },
+            path: "savedList",
+            match: { uid: uid },
           }]
         })
         .populate({
           path: 'location',
           populate: {
-            path: 'insertUid',
+            path: 'uid',
             model: 'User'
           },
-          match: {_id: locationId}
+          match: { _id: locationId }
         })
         .limit(mQuery.limit)
         .skip(mQuery.skip)
@@ -79,7 +79,7 @@ export class SaveLocationService {
               savedLocations.splice(i, 1);
           })
           return savedLocations.map((location) => location.location).map((location: any) => {
-            location.saved = location.savedList.length > 0 ;
+            location.saved = location.savedList.length > 0;
             return location
           })
         })
@@ -91,7 +91,7 @@ export class SaveLocationService {
 
   async findOne(req: Http2ServerRequest, locationId: string) {
     try {
-      let uid: any = await this.userService.getUserObjectId(req); 
+      let uid: any = await this.userService.getUserObjectId(req);
       return await this.saveLocationModel.findOne({ location: new ObjectId(locationId), uid: uid });
     } catch (error) {
       this.logger.error(error)
@@ -103,9 +103,9 @@ export class SaveLocationService {
     try {
       let locationToUpdate: SaveLocationDocument = await this.findOne(req, id)
       if (locationToUpdate == null)
-         this.create(req, id);
-      else 
-         this.delete(req, id)
+        this.create(req, id);
+      else
+        this.delete(req, id)
       return true;
     } catch (error) {
       this.logger.error(error)
@@ -117,7 +117,7 @@ export class SaveLocationService {
     try {
 
       let objId = new mongoose.Types.ObjectId(id)
-      let uid: any = await this.userService.getUserObjectId(req) ;
+      let uid: any = await this.userService.getUserObjectId(req);
       let ret = await this.saveLocationModel.deleteOne({ locationId: objId, uid: uid._id.toString() })
       return ret.deletedCount > 0
     } catch (error) {

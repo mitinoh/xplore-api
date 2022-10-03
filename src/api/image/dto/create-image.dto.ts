@@ -7,7 +7,7 @@ export class CreateImageDto {
     @IsNotEmpty()
     base64: string;
 
-    @ApiProperty({enum: ImageEntity})
+    @ApiProperty({ enum: ImageEntity })
     @IsNotEmpty()
     entity: string;
 }

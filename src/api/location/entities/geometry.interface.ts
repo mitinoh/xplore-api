@@ -8,7 +8,6 @@ export class Geometry {
   type: String
 
   @ApiProperty({ type: [Number] })
-  @IsLongitude()
   @Prop({ type: [Number] })
   coordinates: number[]
 
