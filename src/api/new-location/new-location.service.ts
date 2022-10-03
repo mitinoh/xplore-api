@@ -26,16 +26,9 @@ export class NewLocationService {
   async create(req: Http2ServerRequest, createNewLocationDto: CreateNewLocationDto) {
 
     try {
-      let base64 = createNewLocationDto.base64
       let uid: any = await this.userService.getUserObjectId(req);
-      delete createNewLocationDto.base64
       let newCreateNewLocation = new this.newLocationModel({ ...createNewLocationDto, uid: uid });
       let newLocationObj = await newCreateNewLocation.save();
-
-      let id: MongooseSchema.Types.ObjectId = newLocationObj._id
-      // Creo l'immagine che mi viene passata come base64
-      if (base64 && base64 != null && base64.toString().trim() != "")
-        this.imageService.create(id.toString(), { base64: base64, entity: "location" });
 
       return newLocationObj;
     } catch (error) {

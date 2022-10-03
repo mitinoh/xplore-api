@@ -85,11 +85,6 @@ export class UserService {
   async update(req: Http2ServerRequest, updateUserDto: UpdateUserDto) {
     try {
       let uid: any = await this.getUserObjectId(req);
-      let base64: string = updateUserDto.base64;
-      delete updateUserDto.base64
-
-      if (base64)
-        this.imageService.create(uid, { base64: base64, entity: "user" })
       return await this.userModel.findOneAndUpdate({ _id: uid },
         updateUserDto, {
         new: false

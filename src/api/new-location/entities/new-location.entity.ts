@@ -45,22 +45,8 @@ export class NewLocation {
     @Type(() => LocationCategory)
     locationCategory: LocationCategory[]
 
-
-
-
-
-    /*
-        @ApiProperty({ type: String })
-        @Prop({ type: String })
-        @IsString()
-        base64: string
-        */
-
-
     @Prop({ type: Date })
     cdate: Date
-
-
 
 }
 
