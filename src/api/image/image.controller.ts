@@ -11,17 +11,18 @@ import { diskStorage } from 'multer'
 @Controller('image')
 export class ImageController {
   constructor(private readonly imageService: ImageService) { }
- 
+
   @Post('upload/:entity/:id')
   @UseInterceptors(
     FileInterceptor("photo", {
       storage:
         diskStorage({
           destination: (req, file, cb) => {
-            cb(null,  getDestination(req.params.entity));
+            cb(null, getDestination(req.params.entity));
           },
           filename: (req, file, cb) => {
-            cb(null, req.params.id);
+            let extension: string = file.originalname.split('.').pop()
+            cb(null, req.params.id + '.' + extension);
           },
         })
 
@@ -42,7 +43,7 @@ function getDestination(entity: string): string {
   switch (entity) {
     case 'location': return pth.location
     case 'badge': return pth.badge
-    case 'user': return pth.user 
+    case 'user': return pth.user
     default: return pth.all
   }
 }
