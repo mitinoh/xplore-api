@@ -8,12 +8,14 @@ import { AppModule } from './app.module';
 import getLogLevels from './shared/getLogLevels';
 
 async function bootstrap() {
-
+  if (!process.env.NODE_ENV) process.env.NODE_ENV = "prod"
+  console.log("Running in: " + process.env.NODE_ENV)
   const app = await NestFactory.create(
     AppModule,
     {
-      logger: getLogLevels(process.env.NODE_ENV === 'production')
+      logger: getLogLevels(process.env.NODE_ENV === 'prod')
     });
+
   app.useGlobalPipes(new ValidationPipe({
     transformOptions: {
       enableImplicitConversion: true, // allow conversion underneath
@@ -29,18 +31,18 @@ async function bootstrap() {
   // https://docs.nestjs.com/openapi/introduction
   const config = new DocumentBuilder()
     .setTitle('nj1')
-    .setDescription('nj1-core for xplore rest api')
+    .setDescription('nj1-core for xplore rest api ' + process.env.NODE_ENV)
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-/*
-  app.enableCors({
-    allowedHeaders: "*",
-    origin: "*"
-  });
-*/
+  /*
+    app.enableCors({
+      allowedHeaders: "*",
+      origin: "*"
+    });
+  */
   await app.listen(3000);
 }
 bootstrap();

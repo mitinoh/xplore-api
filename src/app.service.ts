@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { Http2ServerRequest, Http2ServerResponse } from 'http2';
 import { auth } from './app.properties';
+
+
+
 @Injectable()
 export class AppService {
-  getHello(): string {
-    return 'Hello World!';
-  }
 
   doControls(req: Http2ServerRequest): boolean {
     if(auth.isFromDart) {

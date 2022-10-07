@@ -4,8 +4,10 @@ import {
   NestModule,
   RequestMethod
 } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ServeStaticModule } from '@nestjs/serve-static/dist/serve-static.module';
+import { configuration } from 'config/configuration';
 import { WinstonModule } from 'nest-winston';
 import { FollowerModule } from './api/follower/follower.module';
 import { ImageModule } from './api/image/image.module';
@@ -18,8 +20,8 @@ import { SaveLocationModule } from './api/save-location/save-location.module';
 import { UserReportModule } from './api/user-report/user-report.module';
 import { UserModule } from './api/user/user.module';
 import { VisitLocationModule } from './api/visit-location/visit-location.module';
-import { assetDir, logConf, MONGO_CONNECTION, pth } from './app.properties';
 import { AuthModule } from './auth/auth.module';
+import { assetDir, logConf, pth } from './app.properties';
 import { AuthService } from './auth/auth.service';
 const winston = require('winston');
 require('winston-daily-rotate-file');
@@ -27,6 +29,9 @@ require('winston-daily-rotate-file');
 
 @Module({
   imports: [
+
+
+
     AuthModule,
     LocationModule,
     LocationCategoryModule,
@@ -39,17 +44,14 @@ require('winston-daily-rotate-file');
     FollowerModule,
     ImageModule,
     UserReportModule,
-    /*
-    MongooseModule.forRootAsync({
-      useFactory: async (config: any) => ({
-        uri: MONGO_CONNECTION,
-        autoIndex: true
-      }),
+
+    ConfigModule.forRoot({
+      envFilePath: `${process.cwd()}/config/${process.env.NODE_ENV}.env`,
+      load: [configuration],
+      isGlobal: true
     }),
-    */
 
-
-    MongooseModule.forRoot(MONGO_CONNECTION, { autoIndex: true }),
+    MongooseModule.forRoot(process.env.MONGO_CONNECTION, { autoIndex: true }),
 
     ServeStaticModule.forRoot({
       // http://localhost:3000/asset/location/test.jpg

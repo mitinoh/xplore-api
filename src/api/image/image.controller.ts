@@ -12,6 +12,7 @@ import { diskStorage } from 'multer'
 export class ImageController {
   constructor(private readonly imageService: ImageService) { }
 
+  // https://www.npmjs.com/package/sharp
   @Post('upload/:entity/:id')
   @UseInterceptors(
     FileInterceptor("photo", {
@@ -44,6 +45,7 @@ function getDestination(entity: string): string {
     case 'location': return pth.location
     case 'badge': return pth.badge
     case 'user': return pth.user
+    case 'newLocation': return pth.newLocation
     default: return pth.all
   }
 }
