@@ -21,7 +21,7 @@ import { UserReportModule } from './api/user-report/user-report.module';
 import { UserModule } from './api/user/user.module';
 import { VisitLocationModule } from './api/visit-location/visit-location.module';
 import { AuthModule } from './auth/auth.module';
-import { assetDir, logConf, pth } from './app.properties';
+import { assetDir, logConf, MONGO_CONNECTION, pth } from './app.properties';
 import { AuthService } from './auth/auth.service';
 const winston = require('winston');
 require('winston-daily-rotate-file');
@@ -51,7 +51,7 @@ require('winston-daily-rotate-file');
       isGlobal: true
     }),
 
-    MongooseModule.forRoot(process.env.MONGO_CONNECTION, { autoIndex: true }),
+    MongooseModule.forRoot(MONGO_CONNECTION, { autoIndex: true }),
 
     ServeStaticModule.forRoot({
       // http://localhost:3000/asset/location/test.jpg

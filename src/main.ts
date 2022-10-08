@@ -5,11 +5,12 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { useContainer } from 'class-validator';
 import { json, urlencoded } from 'express';
 import { AppModule } from './app.module';
+import { MONGO_CONNECTION } from './app.properties';
 import getLogLevels from './shared/getLogLevels';
 
 async function bootstrap() {
-  if (!process.env.NODE_ENV) process.env.NODE_ENV = "prod"
-  console.log("Running in: " + process.env.NODE_ENV)
+  console.log("Mongo: " + MONGO_CONNECTION)
+
   const app = await NestFactory.create(
     AppModule,
     {
