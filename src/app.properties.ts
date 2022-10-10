@@ -1,13 +1,14 @@
-//export const MONGO_CONNECTION =  'mongodb://beyondx:TelEcom4nd1@127.0.0.1:10000/xplore?authSource=admin' ;
+//export const MONGO_CONNECTION = 'mongodb://beyondx:TelEcom4nd1@127.0.0.1:10000/xplore?authSource=admin';
 //export const MONGO_CONNECTION = 'mongodb://localhost:27017/nest?authSource=admin'
 export const MONGO_CONNECTION = 'mongodb://beyondx:TelEcom4nd1@127.0.0.1:27017/xplore?authSource=admin'
+
 export const auth = {
   isFromDart: false,
   tokenValid: true
 }
 export const pathDir = {
-  ass: './../',
-  log: './../log/'
+  ass: './../../',
+  log: './../../log/'
 }
 export const assetDir = {
   location: "asset/location/",

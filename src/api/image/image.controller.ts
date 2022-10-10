@@ -22,7 +22,7 @@ export class ImageController {
             cb(null, getDestination(req.params.entity));
           },
           filename: (req, file, cb) => {
-            let extension: string = file.originalname.split('.').pop()
+            let extension: string = file?.originalname?.split('.').pop()
             cb(null, req.params.id + '.' + extension);
           },
         })
