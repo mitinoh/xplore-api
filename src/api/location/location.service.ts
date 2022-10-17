@@ -18,6 +18,7 @@ import { MongooseQueryParser } from 'mongoose-query-parser';
 import { CoordinateFilter } from './entities/coordinate.interface';
 import { LocationCategoryService } from '../location-category/location-category.service';
 import { LocationCategory, LocationCategoryDocument } from '../location-category/entities/location-category.entity';
+import shuffleArray from '../../shared/utils';
 
 @Injectable()
 export class LocationService {
@@ -83,7 +84,7 @@ export class LocationService {
       //let uid = "62a4b356a999f69566175df6"
       let uid: any = await this.userService.getUserObjectId(req);
 
-      return await this.locationModel
+      return shuffleArray(await this.locationModel
         .find(mQuery.filter)
         .populate('locationCategory')
         .populate('uid')
@@ -103,7 +104,7 @@ export class LocationService {
               location.saved = location.savedList.length > 0
             })
           return locations
-        })
+        }))
 
 
     } catch (error) {
