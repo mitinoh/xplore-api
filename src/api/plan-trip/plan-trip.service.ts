@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { ObjectId } from 'bson';
 import { Http2ServerRequest } from 'http2';
 import mongoose, { Model, mquery, PipelineStage } from 'mongoose';
-import { MongooseQueryParser} from 'mongoose-query-parser';
+import { MongooseQueryParser } from 'mongoose-query-parser';
 import { MongoQueryModel } from 'nest-mongo-query-parser';
 import { BooleanArraySupportOption } from 'prettier';
 import { AuthService } from 'src/auth/auth.service';
@@ -11,6 +11,7 @@ import { UserService } from '../user/user.service';
 import { CreatePlanTripDto } from './dto/create-plan-trip.dto';
 import { UpdatePlanTripDto } from './dto/update-plan-trip.dto';
 import { PlanTrip } from './entities/plan-trip.entity';
+import { PlannedLocation } from './entities/planned-location.interface';
 
 @Injectable()
 export class PlanTripService {
@@ -20,10 +21,15 @@ export class PlanTripService {
     @Inject('winston') private readonly logger: Logger,
     private authService: AuthService,
     private readonly userService: UserService) { }
-    mongooseParser = new MongooseQueryParser();
+  mongooseParser = new MongooseQueryParser();
 
   async create(req: Http2ServerRequest, createPlanTripDto: CreatePlanTripDto) {
     try {
+      createPlanTripDto.plannedLocation.forEach((plannedLocation: any) => {
+        let l = { _id: plannedLocation.location['_id'] }
+        plannedLocation.location = {}
+        plannedLocation.location = l
+      })
 
       let uid: any = await this.userService.getUserObjectId(req) ?? '';
       let newCreatePlanTrip = new this.newPlanTripnModel({ ...createPlanTripDto, uid: uid });
@@ -35,13 +41,13 @@ export class PlanTripService {
 
   async findAll(req: Http2ServerRequest, query: any) {
     try {
-      let uid: any = await this.userService.getUserObjectId(req) ?? undefined; 
+      let uid: any = await this.userService.getUserObjectId(req) ?? undefined;
       let mQuery = this.mongooseParser.parse(query)
       mQuery.filter.uid = uid
       return this.newPlanTripnModel
         .find(mQuery.filter)
         .populate({
-           path: 'plannedLocation',
+          path: 'plannedLocation',
           populate: {
             path: 'location', // TODO: togliere fid 
             model: 'Location'
@@ -69,7 +75,7 @@ export class PlanTripService {
       let uidd: string = mQuery.filter.uid;
       delete mQuery.filter.uid
 
-      let uid: any = await this.userService.getUserObjectId(req, uidd); 
+      let uid: any = await this.userService.getUserObjectId(req, uidd);
       mQuery.filter.uid = uid
       return this.newPlanTripnModel
         .find(mQuery.filter).countDocuments()
