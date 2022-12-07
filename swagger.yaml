@@ -1,0 +1,928 @@
+---
+openapi: 3.0.0
+paths:
+  "/api/location":
+    post:
+      operationId: LocationController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateLocationDto"
+      responses:
+        '201':
+          description: ''
+      tags:
+      - location
+    get:
+      operationId: LocationController_findAll
+      parameters:
+      - name: cdate
+        required: false
+        in: query
+        schema:
+          type: date
+      - name: locationCategory
+        required: false
+        in: query
+        schema:
+          type: objectId
+      - name: dayAvaiable.end
+        required: false
+        in: query
+        schema:
+          type: number
+      - name: dayAvaiable.start
+        required: false
+        in: query
+        schema:
+          type: number
+      - name: dayAvaiable.day
+        required: false
+        in: query
+        schema:
+          type: number
+      - name: periodAvaiable
+        required: false
+        in: query
+        schema:
+          type: number
+      - name: coordinate.alt
+        required: false
+        in: query
+        schema:
+          type: number
+      - name: coordinate.lbg
+        required: false
+        in: query
+        schema:
+          type: number
+      - name: coordinate.lat
+        required: false
+        in: query
+        schema:
+          type: number
+      - name: indication
+        required: false
+        in: query
+        schema:
+          type: string
+      - name: desc
+        required: false
+        in: query
+        schema:
+          type: string
+      - name: name
+        required: false
+        in: query
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+      tags:
+      - location
+  "/api/location/{operation}":
+    get:
+      operationId: LocationController_find
+      parameters:
+      - name: operation
+        required: true
+        in: path
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+      tags:
+      - location
+  "/api/location/{id}":
+    get:
+      operationId: LocationController_findOne
+      parameters:
+      - name: id
+        required: true
+        in: path
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+      tags:
+      - location
+    patch:
+      operationId: LocationController_update
+      parameters:
+      - name: id
+        required: true
+        in: path
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateLocationDto"
+      responses:
+        '200':
+          description: ''
+      tags:
+      - location
+  "/api/save-location":
+    get:
+      operationId: SaveLocationController_findAll
+      parameters:
+      - name: location
+        required: false
+        in: query
+        schema:
+          type: objectId
+      - name: uid
+        required: false
+        in: query
+        schema:
+          type: objecId
+      responses:
+        '200':
+          description: ''
+      tags:
+      - save-location
+  "/api/save-location/{id}":
+    patch:
+      operationId: SaveLocationController_toggle
+      parameters:
+      - name: id
+        required: true
+        in: path
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+      tags:
+      - save-location
+  "/api/user":
+    post:
+      operationId: UserController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateUserDto"
+      responses:
+        '201':
+          description: ''
+      tags:
+      - user
+    get:
+      operationId: UserController_findAll
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags:
+      - user
+    patch:
+      operationId: UserController_update
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/UpdateUserDto"
+      responses:
+        '200':
+          description: ''
+      tags:
+      - user
+  "/api/user/{operation}/{id}":
+    get:
+      operationId: UserController_findOne
+      parameters:
+      - name: operation
+        required: true
+        in: path
+        schema:
+          type: string
+      - name: id
+        required: true
+        in: path
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+      tags:
+      - user
+  "/api/user/{id}":
+    delete:
+      operationId: UserController_remove
+      parameters:
+      - name: id
+        required: true
+        in: path
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+      tags:
+      - user
+  "/api/location-category":
+    post:
+      operationId: LocationCategoryController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateLocationCategoryDto"
+      responses:
+        '201':
+          description: ''
+      tags:
+      - location-category
+    get:
+      operationId: LocationCategoryController_findAll
+      parameters:
+      - name: name
+        required: false
+        in: query
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+      tags:
+      - location-category
+  "/api/location-category/{id}":
+    get:
+      operationId: LocationCategoryController_findOne
+      parameters:
+      - name: id
+        required: true
+        in: path
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+      tags:
+      - location-category
+    patch:
+      operationId: LocationCategoryController_update
+      parameters:
+      - name: id
+        required: true
+        in: path
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateLocationCategoryDto"
+      responses:
+        '200':
+          description: ''
+      tags:
+      - location-category
+    delete:
+      operationId: LocationCategoryController_remove
+      parameters:
+      - name: id
+        required: true
+        in: path
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+      tags:
+      - location-category
+  "/api/new-location":
+    post:
+      operationId: NewLocationController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateNewLocationDto"
+      responses:
+        '201':
+          description: ''
+      tags:
+      - new-location
+    get:
+      operationId: NewLocationController_findAll
+      parameters:
+      - name: cdate
+        required: false
+        in: query
+        schema:
+          type: date
+      - name: locationCategory
+        required: false
+        in: query
+        schema:
+          type: objectId
+      - name: uid
+        required: false
+        in: query
+        schema:
+          type: objectId
+      - name: indication
+        required: false
+        in: query
+        schema:
+          type: string
+      - name: address
+        required: false
+        in: query
+        schema:
+          type: string
+      - name: desc
+        required: false
+        in: query
+        schema:
+          type: string
+      - name: name
+        required: false
+        in: query
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+      tags:
+      - new-location
+  "/api/new-location/{id}":
+    get:
+      operationId: NewLocationController_findOne
+      parameters:
+      - name: id
+        required: true
+        in: path
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+      tags:
+      - new-location
+    patch:
+      operationId: NewLocationController_update
+      parameters:
+      - name: id
+        required: true
+        in: path
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateNewLocationDto"
+      responses:
+        '200':
+          description: ''
+      tags:
+      - new-location
+    delete:
+      operationId: NewLocationController_remove
+      parameters:
+      - name: id
+        required: true
+        in: path
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+      tags:
+      - new-location
+  "/api/plan-trip":
+    post:
+      operationId: PlanTripController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreatePlanTripDto"
+      responses:
+        '201':
+          description: ''
+      tags:
+      - plan-trip
+    get:
+      operationId: PlanTripController_findAll
+      parameters:
+      - name: cdate
+        required: false
+        in: query
+        schema:
+          type: date
+      - name: uid
+        required: false
+        in: query
+        schema:
+          type: objectId
+      - name: returnDate
+        required: false
+        in: query
+        schema:
+          type: date
+      - name: goneDate
+        required: false
+        in: query
+        schema:
+          type: date
+      - name: tripName
+        required: false
+        in: query
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+      tags:
+      - plan-trip
+  "/api/plan-trip/{id}":
+    get:
+      operationId: PlanTripController_findOne
+      parameters:
+      - name: id
+        required: true
+        in: path
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+      tags:
+      - plan-trip
+    patch:
+      operationId: PlanTripController_update
+      parameters:
+      - name: id
+        required: true
+        in: path
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreatePlanTripDto"
+      responses:
+        '200':
+          description: ''
+      tags:
+      - plan-trip
+    delete:
+      operationId: PlanTripController_remove
+      parameters:
+      - name: id
+        required: true
+        in: path
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+      tags:
+      - plan-trip
+  "/api/rate-location":
+    post:
+      operationId: RateLocationController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateRateLocationDto"
+      responses:
+        '201':
+          description: ''
+      tags:
+      - rate-location
+    get:
+      operationId: RateLocationController_findAll
+      parameters:
+      - name: location
+        required: false
+        in: query
+        schema:
+          type: objectId
+      - name: uid
+        required: false
+        in: query
+        schema:
+          type: objectId
+      responses:
+        '200':
+          description: ''
+      tags:
+      - rate-location
+  "/api/rate-location/{id}":
+    get:
+      operationId: RateLocationController_findOne
+      parameters:
+      - name: id
+        required: true
+        in: path
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+      tags:
+      - rate-location
+    patch:
+      operationId: RateLocationController_update
+      parameters:
+      - name: id
+        required: true
+        in: path
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateRateLocationDto"
+      responses:
+        '200':
+          description: ''
+      tags:
+      - rate-location
+    delete:
+      operationId: RateLocationController_remove
+      parameters:
+      - name: id
+        required: true
+        in: path
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+      tags:
+      - rate-location
+  "/api/visit-location":
+    post:
+      operationId: VisitLocationController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateVisitLocationDto"
+      responses:
+        '201':
+          description: ''
+      tags:
+      - visit-location
+    get:
+      operationId: VisitLocationController_findAll
+      parameters:
+      - name: location
+        required: false
+        in: query
+        schema:
+          type: objectId
+      - name: uid
+        required: false
+        in: query
+        schema:
+          type: objectId
+      responses:
+        '200':
+          description: ''
+      tags:
+      - visit-location
+  "/api/visit-location/{id}":
+    get:
+      operationId: VisitLocationController_findOne
+      parameters:
+      - name: id
+        required: true
+        in: path
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+      tags:
+      - visit-location
+    delete:
+      operationId: VisitLocationController_remove
+      parameters:
+      - name: id
+        required: true
+        in: path
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+      tags:
+      - visit-location
+  "/api/follower/{operation}/{followed}":
+    post:
+      operationId: FollowerController_create
+      parameters:
+      - name: operation
+        required: true
+        in: path
+        schema:
+          type: string
+      - name: followed
+        required: true
+        in: path
+        schema:
+          type: string
+      responses:
+        '201':
+          description: ''
+      tags:
+      - follower
+  "/api/follower/{operation}":
+    get:
+      operationId: FollowerController_find
+      parameters:
+      - name: operation
+        required: true
+        in: path
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+      tags:
+      - follower
+  "/api/image/upload/{entity}/{id}":
+    post:
+      operationId: ImageController_uploadSingle
+      parameters:
+      - name: id
+        required: true
+        in: path
+        schema:
+          type: string
+      responses:
+        '201':
+          description: ''
+      tags:
+      - image
+  "/api/user-report":
+    post:
+      operationId: UserReportController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateUserReportDto"
+      responses:
+        '201':
+          description: ''
+      tags:
+      - user-report
+  "/api/user-report/{operation}/{uid}":
+    get:
+      operationId: UserReportController_findAll
+      parameters:
+      - name: operation
+        required: true
+        in: path
+        schema:
+          type: string
+      - name: uid
+        required: true
+        in: path
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+      tags:
+      - user-report
+  "/api/user-report/{id}":
+    delete:
+      operationId: UserReportController_remove
+      parameters:
+      - name: id
+        required: true
+        in: path
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+      tags:
+      - user-report
+info:
+  title: nj1
+  description: nj1-core for xplore rest api undefined
+  version: '1.0'
+  contact: {}
+tags: []
+servers: []
+components:
+  schemas:
+    DayAvaiable:
+      type: object
+      properties:
+        day:
+          type: number
+        start:
+          type: number
+        end:
+          type: number
+      required:
+      - day
+      - start
+      - end
+    ObjectId:
+      type: object
+      properties: {}
+    Geometry:
+      type: object
+      properties:
+        type:
+          type: string
+        coordinates:
+          type: array
+          items:
+            type: number
+      required:
+      - type
+      - coordinates
+    CreateLocationDto:
+      type: object
+      properties:
+        name:
+          type: string
+        desc:
+          type: string
+        indication:
+          type: string
+        dayAvaiable:
+          type: array
+          items:
+            "$ref": "#/components/schemas/DayAvaiable"
+        periodAvaiable:
+          type: array
+          items:
+            type: number
+        locationCategory:
+          type: array
+          items:
+            "$ref": "#/components/schemas/ObjectId"
+        geometry:
+          "$ref": "#/components/schemas/Geometry"
+      required:
+      - name
+      - desc
+      - indication
+      - dayAvaiable
+      - periodAvaiable
+      - locationCategory
+      - geometry
+    CreateUserDto:
+      type: object
+      properties:
+        username:
+          type: string
+        bio:
+          type: string
+        categoryPreferences:
+          type: array
+          items:
+            "$ref": "#/components/schemas/ObjectId"
+      required:
+      - username
+      - bio
+      - categoryPreferences
+    UpdateUserDto:
+      type: object
+      properties: {}
+    CreateLocationCategoryDto:
+      type: object
+      properties:
+        name:
+          type: string
+      required:
+      - name
+    CreateNewLocationDto:
+      type: object
+      properties:
+        name:
+          type: string
+        desc:
+          type: string
+        indication:
+          type: string
+        address:
+          type: string
+        locationCategory:
+          type: array
+          items:
+            "$ref": "#/components/schemas/ObjectId"
+      required:
+      - name
+      - desc
+      - indication
+      - address
+      - locationCategory
+    PlannedLocation:
+      type: object
+      properties:
+        date:
+          format: date-time
+          type: string
+        location:
+          "$ref": "#/components/schemas/ObjectId"
+      required:
+      - date
+      - location
+    CreatePlanTripDto:
+      type: object
+      properties:
+        tripName:
+          type: string
+        goneDate:
+          format: date-time
+          type: string
+        returnDate:
+          format: date-time
+          type: string
+        distance:
+          type: number
+        plannedLocation:
+          type: array
+          items:
+            "$ref": "#/components/schemas/PlannedLocation"
+        avoidCategory:
+          type: array
+          items:
+            "$ref": "#/components/schemas/PlannedLocation"
+        geometry:
+          "$ref": "#/components/schemas/Geometry"
+      required:
+      - tripName
+      - goneDate
+      - returnDate
+      - distance
+      - plannedLocation
+      - avoidCategory
+      - geometry
+    CreateRateLocationDto:
+      type: object
+      properties:
+        location:
+          "$ref": "#/components/schemas/ObjectId"
+        rate:
+          type: number
+      required:
+      - location
+      - rate
+    CreateVisitLocationDto:
+      type: object
+      properties:
+        location:
+          "$ref": "#/components/schemas/ObjectId"
+      required:
+      - location
+    CreateUserReportDto:
+      type: object
+      properties:
+        reported:
+          "$ref": "#/components/schemas/ObjectId"
+        causal:
+          type: number
+        desc:
+          type: string
+      required:
+      - reported
+      - causal
+      - desc
