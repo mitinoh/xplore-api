@@ -25,7 +25,7 @@ $ npm run start
 
 For more user friendly api *xplore-api* uses a [mongoose-query-parser](https://www.npmjs.com/package/mongoose-query-parser).
 
-Once application is started you can navigate to `[localhost:3000/api/](http://localhost:3000/api/)` for a full api documentation or in alternative click [here](https://petstore.swagger.io/?url=https://github.com/mitinoh/xplore-nj/blob/master/swagger.yaml).
+Once application is started you can navigate to [localhost:3000/api/](http://localhost:3000/api/) for a full api documentation or in alternative click [here](https://petstore.swagger.io/?url=https://github.com/mitinoh/xplore-nj/blob/master/swagger.yaml).
 
 ## Support
 
