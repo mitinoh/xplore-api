@@ -14,7 +14,7 @@ export class NewLocation {
     id: MongooseSchema.Types.ObjectId
 
     @ApiProperty({ type: String })
-    @Prop({ type: String, required: true })
+    @Prop({ type: String, required: [true, 'Name is Required'] })
     @IsNotEmpty()
     @IsString()
     name: string
