@@ -66,15 +66,12 @@ export class AuthService implements NestMiddleware {
     }
     
     private accessDenied(url: string, res: Response) {
-        console.log("access denied")
-        /*
         res.status(403).json({
             statusCode: 403,
             timestamp: new Date().toISOString(),
             path: url,
             message: "access denied"
         })
-        */
     }
 
 }
